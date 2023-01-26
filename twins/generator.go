@@ -84,8 +84,8 @@ func NewGenerator(logger logging.Logger, settings Settings) *Generator {
 	g.remaining = int64(math.Pow(float64(len(g.leadersPartitions)), float64(g.settings.Views)))
 
 	g.logger.Infof(
-		"%d scenarios can be generated with current settings.",
-		g.remaining,
+		"%d ((%d*%d)^%d) scenarios can be generated with current settings.",
+		g.remaining, len(nodes), len(partitionScenarios), g.settings.Views,
 	)
 
 	return g

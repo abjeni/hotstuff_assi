@@ -72,6 +72,11 @@ type Network struct {
 	// For each view (starting at 1), contains the list of partitions for that view.
 	views []View
 
+	oldMessage any
+	newMessage any
+
+	Messages []any
+
 	// the message types to drop
 	dropTypes map[reflect.Type]struct{}
 
@@ -222,6 +227,41 @@ func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
 	return ok
 }
 
+/*
+type ProposeMsg struct {
+	ID          ID           // The ID of the replica who sent the message.
+	Block       *Block       // The block that is proposed.
+	AggregateQC *AggregateQC // Optional AggregateQC
+}
+
+type VoteMsg struct {
+	ID          ID          // the ID of the replica who sent the message.
+	PartialCert PartialCert // The partial certificate.
+	Deferred    bool
+}
+
+type TimeoutMsg struct {
+	ID            ID              // The ID of the replica who sent the message.
+	View          View            // The view that the replica wants to enter.
+	ViewSignature QuorumSignature // A signature of the view
+	MsgSignature  QuorumSignature // A signature of the view, QC.BlockHash, and the replica ID
+	SyncInfo      SyncInfo        // The highest QC/TC known to the sender.
+}
+
+type NewViewMsg struct {
+	ID       ID       // The ID of the replica who sent the message.
+	SyncInfo SyncInfo // The highest QC / TC.
+}
+
+type CommitEvent struct {
+	Commands int
+}
+*/
+
+func (n *Network) shouldSwap(message any) bool {
+	return reflect.DeepEqual(message, n.oldMessage)
+}
+
 // NewConfiguration returns a new Configuration module for this network.
 func (n *Network) NewConfiguration() modules.Configuration {
 	return &configuration{network: n}
@@ -241,6 +281,7 @@ func (c *configuration) InitModule(mods *modules.Core) {
 }
 
 func (c *configuration) broadcastMessage(message any) {
+	c.network.logger.Infof("broadcasting message")
 	for id := range c.network.replicas {
 		if id == c.node.id.ReplicaID {
 			// do not send message to self or twin
@@ -252,15 +293,27 @@ func (c *configuration) broadcastMessage(message any) {
 }
 
 func (c *configuration) sendMessage(id hotstuff.ID, message any) {
+
 	nodes, ok := c.network.replicas[id]
 	if !ok {
 		panic(fmt.Errorf("attempt to send message to replica %d, but this replica does not exist", id))
 	}
+
+	c.network.Messages = append(c.network.Messages, message)
+
 	for _, node := range nodes {
+
 		if c.shouldDrop(node.id, message) {
 			c.network.logger.Infof("node %v -> node %v: DROP %T(%v)", c.node.id, node.id, message, message)
 			continue
 		}
+
+		if c.network.shouldSwap(message) {
+			c.network.logger.Infof("swapping messages yeah boiii")
+			message = c.network.newMessage
+		}
+
+		fmt.Printf("sending message %v\n", message)
 		c.network.logger.Infof("node %v -> node %v: SEND %T(%v)", c.node.id, node.id, message, message)
 		c.network.pendingMessages = append(
 			c.network.pendingMessages,

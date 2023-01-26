@@ -43,12 +43,14 @@ type ScenarioResult struct {
 	NetworkLog  string
 	NodeLogs    map[NodeID]string
 	NodeCommits map[NodeID][]*hotstuff.Block
+	Messages    []any
 }
 
 // ExecuteScenario executes a twins scenario.
-func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string) (result ScenarioResult, err error) {
+func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string, replaceMessage ...any) (result ScenarioResult, err error) {
 	// Network simulator that blocks proposals, votes, and fetch requests between nodes that are in different partitions.
 	// Timeout and NewView messages are permitted.
+
 	network := NewPartitionedNetwork(scenario,
 		hotstuff.ProposeMsg{},
 		hotstuff.VoteMsg{},
@@ -56,6 +58,11 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 		hotstuff.NewViewMsg{},
 		hotstuff.TimeoutMsg{},
 	)
+
+	if len(replaceMessage) == 2 {
+		network.oldMessage = replaceMessage[0]
+		network.newMessage = replaceMessage[1]
+	}
 
 	nodes, twins := assignNodeIDs(numNodes, numTwins)
 	nodes = append(nodes, twins...)
@@ -81,6 +88,7 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 		NetworkLog:  network.log.String(),
 		NodeLogs:    nodeLogs,
 		NodeCommits: getBlocks(network),
+		Messages:    network.Messages,
 	}, nil
 }
 
