@@ -227,37 +227,6 @@ func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
 	return ok
 }
 
-/*
-type ProposeMsg struct {
-	ID          ID           // The ID of the replica who sent the message.
-	Block       *Block       // The block that is proposed.
-	AggregateQC *AggregateQC // Optional AggregateQC
-}
-
-type VoteMsg struct {
-	ID          ID          // the ID of the replica who sent the message.
-	PartialCert PartialCert // The partial certificate.
-	Deferred    bool
-}
-
-type TimeoutMsg struct {
-	ID            ID              // The ID of the replica who sent the message.
-	View          View            // The view that the replica wants to enter.
-	ViewSignature QuorumSignature // A signature of the view
-	MsgSignature  QuorumSignature // A signature of the view, QC.BlockHash, and the replica ID
-	SyncInfo      SyncInfo        // The highest QC/TC known to the sender.
-}
-
-type NewViewMsg struct {
-	ID       ID       // The ID of the replica who sent the message.
-	SyncInfo SyncInfo // The highest QC / TC.
-}
-
-type CommitEvent struct {
-	Commands int
-}
-*/
-
 func (n *Network) shouldSwap(message any) bool {
 	return reflect.DeepEqual(message, n.oldMessage)
 }
@@ -313,7 +282,6 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 			message = c.network.newMessage
 		}
 
-		fmt.Printf("sending message %v\n", message)
 		c.network.logger.Infof("node %v -> node %v: SEND %T(%v)", c.node.id, node.id, message, message)
 		c.network.pendingMessages = append(
 			c.network.pendingMessages,
