@@ -8,7 +8,7 @@ import (
 	_ "github.com/relab/hotstuff/consensus/chainedhotstuff"
 )
 
-func basicScenario(t *testing.T, newMessage hotstuff.ProposeMsg) {
+func basicScenario(t *testing.T) {
 	allNodesSet := make(NodeSet)
 	for i := 1; i <= 4; i++ {
 		allNodesSet.Add(uint32(i))
@@ -32,6 +32,19 @@ func basicScenario(t *testing.T, newMessage hotstuff.ProposeMsg) {
 
 	oldMessage := result.Messages[0]
 
+	hash := oldMessage.(hotstuff.ProposeMsg).Block.Parent()
+
+	newMessage := hotstuff.ProposeMsg{
+		ID: 1,
+		Block: hotstuff.NewBlock(
+			hash,
+			hotstuff.NewQuorumCert(nil, 1, hash),
+			"",
+			1,
+			1,
+		),
+	}
+
 	result, err := ExecuteScenario(s, 4, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 
 	fmt.Print("\n\n\n\n\n\n\n\n")
@@ -51,7 +64,7 @@ func basicScenario(t *testing.T, newMessage hotstuff.ProposeMsg) {
 }
 
 func TestBasicScenario(t *testing.T) {
-	basicScenario(t, hotstuff.ProposeMsg{})
+	basicScenario(t)
 }
 
 /*
@@ -72,18 +85,6 @@ func NewBlock(parent Hash, cert QuorumCert, cmd Command, view View, proposer ID)
 func FuzzBasicScenario(f *testing.F) {
 	f.Add()
 	f.Fuzz(func(t *testing.T) {
-
-		newMessage := hotstuff.ProposeMsg{
-			ID: 1,
-			Block: hotstuff.NewBlock(
-				[32]byte{},
-				hotstuff.NewQuorumCert(),
-				"lmao",
-				1,
-				1,
-			),
-		}
-
-		basicScenario(t, newMessage)
+		basicScenario(t)
 	})
 }
