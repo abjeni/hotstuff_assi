@@ -109,6 +109,11 @@ func (c crypto) VerifyQuorumCert(qc hotstuff.QuorumCert) bool {
 	if qc.BlockHash() == hotstuff.GetGenesis().Hash() {
 		return true
 	}
+
+	if qc.Signature() == nil {
+		return false
+	}
+
 	if qc.Signature().Participants().Len() < c.configuration.QuorumSize() {
 		return false
 	}
