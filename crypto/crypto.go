@@ -110,6 +110,7 @@ func (c crypto) VerifyQuorumCert(qc hotstuff.QuorumCert) bool {
 		return true
 	}
 
+	// this may be a bad fix
 	if qc.Signature() == nil {
 		return false
 	}
