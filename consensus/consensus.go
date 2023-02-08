@@ -165,7 +165,7 @@ func (cs *consensusBase) OnPropose(proposal hotstuff.ProposeMsg) { //nolint:gocy
 
 	block := proposal.Block
 
-	// this may be a bad fix
+	// quick fix for when block is nil
 	if block == nil {
 		cs.logger.Warn("OnPropose: block is nil")
 		return
