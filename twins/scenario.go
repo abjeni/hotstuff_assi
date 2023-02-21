@@ -38,12 +38,13 @@ func (s Scenario) String() string {
 
 // ScenarioResult contains the result and logs from executing a scenario.
 type ScenarioResult struct {
-	Safe        bool
-	Commits     int
-	NetworkLog  string
-	NodeLogs    map[NodeID]string
-	NodeCommits map[NodeID][]*hotstuff.Block
-	Messages    []any
+	Safe         bool
+	Commits      int
+	NetworkLog   string
+	NodeLogs     map[NodeID]string
+	NodeCommits  map[NodeID][]*hotstuff.Block
+	Messages     []any
+	MessageCount int
 }
 
 // ExecuteScenario executes a twins scenario.
@@ -60,8 +61,8 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 	)
 
 	if len(replaceMessage) == 2 {
-		network.oldMessage = replaceMessage[0]
-		network.newMessage = replaceMessage[1]
+		network.OldMessage = replaceMessage[0].(int)
+		network.NewMessage = replaceMessage[1]
 	}
 
 	nodes, twins := assignNodeIDs(numNodes, numTwins)
@@ -83,12 +84,13 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 	safe, commits := checkCommits(network)
 
 	return ScenarioResult{
-		Safe:        safe,
-		Commits:     commits,
-		NetworkLog:  network.log.String(),
-		NodeLogs:    nodeLogs,
-		NodeCommits: getBlocks(network),
-		Messages:    network.Messages,
+		Safe:         safe,
+		Commits:      commits,
+		NetworkLog:   network.log.String(),
+		NodeLogs:     nodeLogs,
+		NodeCommits:  getBlocks(network),
+		Messages:     network.Messages,
+		MessageCount: network.MessageCounter,
 	}, nil
 }
 

@@ -72,10 +72,12 @@ type Network struct {
 	// For each view (starting at 1), contains the list of partitions for that view.
 	views []View
 
-	oldMessage any
-	newMessage any
+	OldMessage int
+	NewMessage any
 
 	Messages []any
+
+	MessageCounter int
 
 	// the message types to drop
 	dropTypes map[reflect.Type]struct{}
@@ -228,7 +230,7 @@ func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
 }
 
 func (n *Network) shouldSwap(message any) bool {
-	return reflect.DeepEqual(message, n.oldMessage)
+	return n.OldMessage == n.MessageCounter
 }
 
 // NewConfiguration returns a new Configuration module for this network.
@@ -269,6 +271,7 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 	}
 
 	c.network.Messages = append(c.network.Messages, message)
+	c.network.MessageCounter += 1
 
 	for _, node := range nodes {
 
@@ -279,7 +282,7 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 
 		if c.network.shouldSwap(message) {
 			c.network.logger.Infof("swapping messages yeah boiii")
-			message = c.network.newMessage
+			message = c.network.NewMessage
 		}
 
 		c.network.logger.Infof("node %v -> node %v: SEND %T(%v)", c.node.id, node.id, message, message)
