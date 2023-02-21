@@ -111,9 +111,9 @@ func (c crypto) VerifyQuorumCert(qc hotstuff.QuorumCert) bool {
 	}
 
 	// quick fix for when signature is not initialized
-	if qc.Signature() == nil {
+	/*if qc.Signature() == nil {
 		return false
-	}
+	}*/
 
 	if qc.Signature().Participants().Len() < c.configuration.QuorumSize() {
 		return false

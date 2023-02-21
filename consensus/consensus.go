@@ -166,10 +166,10 @@ func (cs *consensusBase) OnPropose(proposal hotstuff.ProposeMsg) { //nolint:gocy
 	block := proposal.Block
 
 	// quick fix for when block is nil
-	if block == nil {
+	/*if block == nil {
 		cs.logger.Warn("OnPropose: block is nil")
 		return
-	}
+	}*/
 
 	if cs.opts.ShouldUseAggQC() && proposal.AggregateQC != nil {
 		highQC, ok := cs.crypto.VerifyAggregateQC(*proposal.AggregateQC)
