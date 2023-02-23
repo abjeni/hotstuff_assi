@@ -195,6 +195,7 @@ func (n *Network) tick() {
 // shouldDrop decides if the sender should drop the message, based on the current view of the sender and the
 // partitions configured for that view.
 func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
+
 	node, ok := n.nodes[sender]
 	if !ok {
 		panic(fmt.Errorf("node matching sender id %d was not found", sender))
@@ -230,6 +231,7 @@ func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
 }
 
 func (n *Network) shouldSwap(message any) bool {
+	n.logger.Infof("is %d equal to %d?", n.OldMessage, n.MessageCounter)
 	return n.OldMessage == n.MessageCounter
 }
 
@@ -270,9 +272,6 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 		panic(fmt.Errorf("attempt to send message to replica %d, but this replica does not exist", id))
 	}
 
-	c.network.Messages = append(c.network.Messages, message)
-	c.network.MessageCounter += 1
-
 	for _, node := range nodes {
 
 		if c.shouldDrop(node.id, message) {
@@ -280,8 +279,15 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 			continue
 		}
 
+		c.network.Messages = append(c.network.Messages, message)
+		c.network.MessageCounter += 1
+
 		if c.network.shouldSwap(message) {
-			c.network.logger.Infof("swapping messages yeah boiii")
+
+			if (c.network.NewMessage.(hotstuff.ProposeMsg).Block.Parent() == hotstuff.Hash{}) {
+				c.network.NewMessage.(hotstuff.ProposeMsg).Block.SetParent(message.(hotstuff.ProposeMsg).Block.Parent())
+			}
+			c.network.logger.Infof("swapping message with fuzz message")
 			message = c.network.NewMessage
 		}
 

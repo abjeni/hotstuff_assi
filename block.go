@@ -57,6 +57,12 @@ func (b *Block) Parent() Hash {
 	return b.parent
 }
 
+func (b *Block) SetParent(hash Hash) {
+	b.parent = hash
+	b.cert.hash = hash
+	b.hash = sha256.Sum256(b.ToBytes())
+}
+
 // Command returns the command
 func (b *Block) Command() Command {
 	return b.cmd

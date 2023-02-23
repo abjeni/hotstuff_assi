@@ -45,6 +45,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gonuts/binary v0.2.0 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/pprof v0.0.0-20220412212628-83db2b799d1f // indirect
 	github.com/gorilla/mux v1.7.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
