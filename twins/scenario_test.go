@@ -62,12 +62,15 @@ func SimplifyStack(stack string) string {
 		}
 	}
 
-	simpleStack := strings.Join(simpleStackLines, "\n")
+	simpleStackLines = simpleStackLines[3:]
+
+	//simpleStack := strings.Join(simpleStackLines, "\n")
+	simpleStack := simpleStackLines[0]
 
 	return simpleStack
 }
 
-func TryExecuteScenario(errorInfo *ErrorInfo, scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string, oldMessage any, newMessage any) {
+func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string, oldMessage any, newMessage any) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -84,24 +87,21 @@ func TryExecuteScenario(errorInfo *ErrorInfo, scenario Scenario, numNodes, numTw
 	result, err := ExecuteScenario(scenario, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 
 	if err != nil {
-		//t.Fatal(err)
-		return
+		t.Fatal(err)
 	}
 
 	if !result.Safe {
-		//t.Errorf("Expected no safety violations")
-		return
+		t.Errorf("Expected no safety violations")
 	}
 
 	if result.Commits != 1 {
-		//t.Errorf("Expected one commit (got %d)", result.Commits)
-		return
+		t.Errorf("Expected one commit (got %d)", result.Commits)
 	}
 
 	//fmt.Println(result.NetworkLog)
 }
 
-func basicScenario(newMessage any) {
+func basicScenario(t *testing.T, newMessage any) {
 
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
@@ -131,7 +131,7 @@ func basicScenario(newMessage any) {
 		//fmt.Print("\n\n\n\n\n")
 		oldMessage := i
 
-		TryExecuteScenario(errorInfo, s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
+		TryExecuteScenario(t, errorInfo, s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 
 		//fmt.Print(result.NetworkLog)
 	}
@@ -163,7 +163,7 @@ func TestBasicScenario(t *testing.T) {
 		),
 	}
 
-	basicScenario(newMessage)
+	basicScenario(t, newMessage)
 }
 
 func TestFuzz(t *testing.T) {
@@ -171,6 +171,17 @@ func TestFuzz(t *testing.T) {
 	nilChance := 0.1
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
+		func(m *any, c fuzz.Continue) {
+			msgs := []any{
+				hotstuff.ProposeMsg{},
+				hotstuff.VoteMsg{},
+				hotstuff.TimeoutMsg{},
+				hotstuff.NewViewMsg{},
+				hotstuff.CommitEvent{},
+			}
+			*m = msgs[c.Intn(5)]
+			c.Fuzz(m)
+		},
 		func(block **hotstuff.Block, c fuzz.Continue) {
 
 			if c.Float64() < nilChance {
@@ -207,11 +218,11 @@ func TestFuzz(t *testing.T) {
 		},
 	)
 
-	for i := 0; i < 100; i++ {
-		newMessage := hotstuff.ProposeMsg{}
+	for i := 0; i < 10; i++ {
+		var newMessage any
 		f.Fuzz(&newMessage)
 
-		fmt.Println(newMessage)
-		basicScenario(newMessage)
+		fmt.Printf("%T, %v\n", newMessage, newMessage)
+		basicScenario(t, newMessage)
 	}
 }
