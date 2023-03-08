@@ -97,10 +97,7 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, n
 	}
 }
 
-func basicScenario(t *testing.T, newMessage any) {
-
-	errorInfo := new(ErrorInfo)
-	errorInfo.Init()
+func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
 
 	var numNodes uint8 = 4
 
@@ -124,36 +121,35 @@ func basicScenario(t *testing.T, newMessage any) {
 
 		TryExecuteScenario(t, errorInfo, s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 	}
-
-	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
-
-	for key := range errorInfo.panics {
-		fmt.Println()
-		fmt.Println(key)
-		fmt.Println()
-	}
-
-	if len(errorInfo.panics) > 1 {
-		panic("many unique errors")
-	}
-
-	fmt.Printf("%d of %d runs were errors\n", errorInfo.errorCount, messageCount)
 }
 
 func TestBasicScenario(t *testing.T) {
+	var numNodes uint8 = 4
 
-	newMessage := hotstuff.ProposeMsg{
-		ID: 1,
-		Block: hotstuff.NewBlock(
-			[32]byte{},
-			hotstuff.NewQuorumCert(nil, 0, [32]byte{}),
-			"0",
-			1,
-			1,
-		),
+	allNodesSet := make(NodeSet)
+	for i := 1; i <= int(numNodes); i++ {
+		allNodesSet.Add(uint32(i))
 	}
 
-	basicScenario(t, newMessage)
+	s := Scenario{}
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+
+	result, err := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff")
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !result.Safe {
+		t.Errorf("Expected no safety violations")
+	}
+
+	if result.Commits != 1 {
+		t.Errorf("Expected one commit (got %d)", result.Commits)
+	}
 }
 
 func TestFuzz(t *testing.T) {
@@ -165,22 +161,18 @@ func TestFuzz(t *testing.T) {
 			switch c.Intn(5) {
 			case 0:
 				msg := hotstuff.ProposeMsg{}
-				fmt.Printf("%T\n", msg)
 				c.Fuzz(&msg)
 				*m = msg
 			case 1:
 				msg := hotstuff.VoteMsg{}
-				fmt.Printf("%T\n", msg)
 				c.Fuzz(&msg)
 				*m = msg
 			case 2:
 				msg := hotstuff.TimeoutMsg{}
-				fmt.Printf("%T\n", msg)
 				c.Fuzz(&msg)
 				*m = msg
 			case 3:
 				msg := hotstuff.NewViewMsg{}
-				fmt.Printf("%T\n", msg)
 				c.Fuzz(&msg)
 				*m = msg
 			case 4:
@@ -190,7 +182,6 @@ func TestFuzz(t *testing.T) {
 			}
 		},
 		func(block **hotstuff.Block, c fuzz.Continue) {
-
 			if c.Float64() < nilChance {
 				*block = nil
 				return
@@ -232,11 +223,28 @@ func TestFuzz(t *testing.T) {
 		},
 	)
 
-	for i := 0; i < 10; i++ {
+	errorInfo := new(ErrorInfo)
+	errorInfo.Init()
+
+	for i := 0; i < 100; i++ {
 		var newMessage any
 		f.Fuzz(&newMessage)
 
 		fmt.Printf("%T, %v\n", newMessage, newMessage)
-		basicScenario(t, newMessage)
+		fuzzScenario(t, errorInfo, newMessage)
 	}
+
+	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
+
+	for key := range errorInfo.panics {
+		fmt.Println()
+		fmt.Println(key)
+		fmt.Println()
+	}
+
+	if len(errorInfo.panics) > 1 {
+		panic("many unique errors")
+	}
+
+	fmt.Printf("%d of %d runs were errors\n", errorInfo.errorCount, messageCount)
 }
