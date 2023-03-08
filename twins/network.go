@@ -284,9 +284,9 @@ func (c *configuration) sendMessage(id hotstuff.ID, message any) {
 
 		if c.network.shouldSwap(message) {
 
-			if (c.network.NewMessage.(hotstuff.ProposeMsg).Block.Parent() == hotstuff.Hash{}) {
+			/*if (c.network.NewMessage.(hotstuff.ProposeMsg).Block.Parent() == hotstuff.Hash{}) {
 				c.network.NewMessage.(hotstuff.ProposeMsg).Block.SetParent(message.(hotstuff.ProposeMsg).Block.Parent())
-			}
+			}*/
 			c.network.logger.Infof("swapping message with fuzz message")
 			message = c.network.NewMessage
 		}

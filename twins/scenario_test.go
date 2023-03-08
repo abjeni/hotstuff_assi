@@ -9,6 +9,8 @@ import (
 	fuzz "github.com/google/gofuzz"
 	"github.com/relab/hotstuff"
 
+	"github.com/relab/hotstuff/internal/proto/hotstuffpb"
+
 	_ "github.com/relab/hotstuff/consensus/chainedhotstuff"
 )
 
@@ -77,10 +79,6 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, n
 			stack := string(debug.Stack())
 
 			errorInfo.AddPanic(stack, err)
-
-			//fmt.Printf("%s\n\n\n", stack)
-
-			//fmt.Printf("PANIC ERROR: %v\n", err)
 		}
 	}()
 
@@ -97,8 +95,6 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, n
 	if result.Commits != 1 {
 		t.Errorf("Expected one commit (got %d)", result.Commits)
 	}
-
-	//fmt.Println(result.NetworkLog)
 }
 
 func basicScenario(t *testing.T, newMessage any) {
@@ -121,29 +117,23 @@ func basicScenario(t *testing.T, newMessage any) {
 
 	result, _ := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff")
 
-	//fmt.Print(result.NetworkLog)
-
-	//fmt.Printf("\n\n\n\nmessages: %v\n\n\n\n", result.MessageCount)
-
 	messageCount := result.MessageCount
 
 	for i := 1; i <= messageCount; i++ {
-		//fmt.Print("\n\n\n\n\n")
 		oldMessage := i
 
 		TryExecuteScenario(t, errorInfo, s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
-
-		//fmt.Print(result.NetworkLog)
 	}
 
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 
+	for key := range errorInfo.panics {
+		fmt.Println()
+		fmt.Println(key)
+		fmt.Println()
+	}
+
 	if len(errorInfo.panics) > 1 {
-		for key := range errorInfo.panics {
-			fmt.Println()
-			fmt.Println(key)
-			fmt.Println()
-		}
 		panic("many unique errors")
 	}
 
@@ -172,15 +162,32 @@ func TestFuzz(t *testing.T) {
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
 		func(m *any, c fuzz.Continue) {
-			msgs := []any{
-				hotstuff.ProposeMsg{},
-				hotstuff.VoteMsg{},
-				hotstuff.TimeoutMsg{},
-				hotstuff.NewViewMsg{},
-				hotstuff.CommitEvent{},
+			switch c.Intn(5) {
+			case 0:
+				msg := hotstuff.ProposeMsg{}
+				fmt.Printf("%T\n", msg)
+				c.Fuzz(&msg)
+				*m = msg
+			case 1:
+				msg := hotstuff.VoteMsg{}
+				fmt.Printf("%T\n", msg)
+				c.Fuzz(&msg)
+				*m = msg
+			case 2:
+				msg := hotstuff.TimeoutMsg{}
+				fmt.Printf("%T\n", msg)
+				c.Fuzz(&msg)
+				*m = msg
+			case 3:
+				msg := hotstuff.NewViewMsg{}
+				fmt.Printf("%T\n", msg)
+				c.Fuzz(&msg)
+				*m = msg
+			case 4:
+				msg := hotstuff.CommitEvent{}
+				c.Fuzz(&msg)
+				*m = msg
 			}
-			*m = msgs[c.Intn(5)]
-			c.Fuzz(m)
 		},
 		func(block **hotstuff.Block, c fuzz.Continue) {
 
@@ -189,32 +196,39 @@ func TestFuzz(t *testing.T) {
 				return
 			}
 
-			var hash [32]byte
-			var cert hotstuff.QuorumCert
-			var cmd hotstuff.Command
-			var view hotstuff.View
-			var proposer hotstuff.ID
+			blockpb := hotstuffpb.Block{}
+			c.Fuzz(&blockpb)
+			*block = hotstuffpb.BlockFromProto(&blockpb)
+		},
+		func(sig *hotstuffpb.QuorumSignature, c fuzz.Continue) {
+			if c.RandBool() {
+				ecdsa := new(hotstuffpb.QuorumSignature_ECDSASigs)
+				c.Fuzz(ecdsa)
+				sig.Sig = ecdsa
+			} else {
+				bls12 := new(hotstuffpb.QuorumSignature_BLS12Sig)
+				c.Fuzz(bls12)
+				sig.Sig = bls12
+			}
+		},
+		func(sig **hotstuffpb.QuorumSignature, c fuzz.Continue) {
+			if c.Float64() < nilChance {
+				*sig = nil
+				return
+			}
 
-			c.Fuzz(&hash)
-			c.Fuzz(&cert)
-			c.Fuzz(&cmd)
-			c.Fuzz(&view)
-			c.Fuzz(&proposer)
-			*block = hotstuff.NewBlock(
-				hash,
-				cert,
-				cmd,
-				view,
-				proposer,
-			)
+			*sig = new(hotstuffpb.QuorumSignature)
+			c.Fuzz(*sig)
 		},
 		func(qc *hotstuff.QuorumCert, c fuzz.Continue) {
-			var view hotstuff.View
-			c.Fuzz(&view)
-			var hash [32]byte
-			c.Fuzz(&hash)
-
-			*qc = hotstuff.NewQuorumCert(nil, view, hash)
+			qcpb := hotstuffpb.QuorumCert{}
+			c.Fuzz(&qcpb)
+			*qc = hotstuffpb.QuorumCertFromProto(&qcpb)
+		},
+		func(sig *hotstuff.QuorumSignature, c fuzz.Continue) {
+			sigpb := hotstuffpb.QuorumSignature{}
+			c.Fuzz(&sigpb)
+			*sig = hotstuffpb.QuorumSignatureFromProto(&sigpb)
 		},
 	)
 
