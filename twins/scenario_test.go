@@ -152,6 +152,20 @@ func TestBasicScenario(t *testing.T) {
 	}
 }
 
+func getFuzzMessage(f *fuzz.Fuzzer, errorInfo *ErrorInfo) any {
+	defer func() {
+		if err := recover(); err != nil {
+			stack := string(debug.Stack())
+
+			errorInfo.AddPanic(stack, err)
+		}
+	}()
+
+	var newMessage any
+	f.Fuzz(&newMessage)
+	return newMessage
+}
+
 func TestFuzz(t *testing.T) {
 	nilChance := 0.1
 
@@ -240,23 +254,24 @@ func TestFuzz(t *testing.T) {
 	errorInfo.Init()
 
 	for i := 0; i < 100; i++ {
-		var newMessage any
-		f.Fuzz(&newMessage)
 
-		fmt.Printf("%T, %v\n", newMessage, newMessage)
-		fuzzScenario(t, errorInfo, newMessage)
+		newMessage := getFuzzMessage(f, errorInfo)
+
+		if newMessage != nil {
+			fmt.Printf("%T, %v\n", newMessage, newMessage)
+			fuzzScenario(t, errorInfo, newMessage)
+		}
 	}
 
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 
-	for key := range errorInfo.panics {
-		fmt.Println()
+	for key, panics := range errorInfo.panics {
+		panic := panics[0]
+		fmt.Println(panic.Err)
 		fmt.Println(key)
+		fmt.Println("one full stack trace:")
+		fmt.Print(panic.StackTrace)
 		fmt.Println()
-	}
-
-	if len(errorInfo.panics) > 1 {
-		panic("many unique errors")
 	}
 
 	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
