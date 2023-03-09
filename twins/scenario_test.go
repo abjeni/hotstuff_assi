@@ -153,12 +153,11 @@ func TestBasicScenario(t *testing.T) {
 }
 
 func TestFuzz(t *testing.T) {
-
 	nilChance := 0.1
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
 		func(m *any, c fuzz.Continue) {
-			switch c.Intn(5) {
+			switch c.Intn(4) {
 			case 0:
 				msg := hotstuff.ProposeMsg{}
 				c.Fuzz(&msg)
@@ -175,12 +174,9 @@ func TestFuzz(t *testing.T) {
 				msg := hotstuff.NewViewMsg{}
 				c.Fuzz(&msg)
 				*m = msg
-			case 4:
-				msg := hotstuff.CommitEvent{}
-				c.Fuzz(&msg)
-				*m = msg
 			}
 		},
+
 		func(block **hotstuff.Block, c fuzz.Continue) {
 			if c.Float64() < nilChance {
 				*block = nil
@@ -191,6 +187,33 @@ func TestFuzz(t *testing.T) {
 			c.Fuzz(&blockpb)
 			*block = hotstuffpb.BlockFromProto(&blockpb)
 		},
+
+		func(qc *hotstuff.QuorumCert, c fuzz.Continue) {
+			qcpb := hotstuffpb.QuorumCert{}
+			c.Fuzz(&qcpb)
+			*qc = hotstuffpb.QuorumCertFromProto(&qcpb)
+		},
+		func(qs *hotstuff.QuorumSignature, c fuzz.Continue) {
+			qspb := hotstuffpb.QuorumSignature{}
+			c.Fuzz(&qspb)
+			*qs = hotstuffpb.QuorumSignatureFromProto(&qspb)
+		},
+		func(partialCert *hotstuff.PartialCert, c fuzz.Continue) {
+			partialCertPB := hotstuffpb.PartialCert{}
+			c.Fuzz(&partialCertPB)
+			*partialCert = hotstuffpb.PartialCertFromProto(&partialCertPB)
+		},
+		func(syncInfo *hotstuff.SyncInfo, c fuzz.Continue) {
+			syncInfoPB := hotstuffpb.SyncInfo{}
+			c.Fuzz(&syncInfoPB)
+			*syncInfo = hotstuffpb.SyncInfoFromProto(&syncInfoPB)
+		},
+		func(aggQC *hotstuff.AggregateQC, c fuzz.Continue) {
+			aggQCPB := hotstuffpb.AggQC{}
+			c.Fuzz(&aggQCPB)
+			*aggQC = hotstuffpb.AggregateQCFromProto(&aggQCPB)
+		},
+
 		func(sig *hotstuffpb.QuorumSignature, c fuzz.Continue) {
 			if c.RandBool() {
 				ecdsa := new(hotstuffpb.QuorumSignature_ECDSASigs)
@@ -210,16 +233,6 @@ func TestFuzz(t *testing.T) {
 
 			*sig = new(hotstuffpb.QuorumSignature)
 			c.Fuzz(*sig)
-		},
-		func(qc *hotstuff.QuorumCert, c fuzz.Continue) {
-			qcpb := hotstuffpb.QuorumCert{}
-			c.Fuzz(&qcpb)
-			*qc = hotstuffpb.QuorumCertFromProto(&qcpb)
-		},
-		func(sig *hotstuff.QuorumSignature, c fuzz.Continue) {
-			sigpb := hotstuffpb.QuorumSignature{}
-			c.Fuzz(&sigpb)
-			*sig = hotstuffpb.QuorumSignatureFromProto(&sigpb)
 		},
 	)
 
@@ -246,5 +259,5 @@ func TestFuzz(t *testing.T) {
 		panic("many unique errors")
 	}
 
-	fmt.Printf("%d of %d runs were errors\n", errorInfo.errorCount, messageCount)
+	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
 }
