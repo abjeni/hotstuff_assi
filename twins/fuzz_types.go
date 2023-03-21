@@ -30,7 +30,7 @@ func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
 	}
 
 	return fmt.Sprintf(
-		"ProposeMsg{\n"+
+		"twins.ProposeMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tProposal: %v\n"+
 			"%s}",
@@ -68,7 +68,7 @@ func BlockToString(block *hotstuffpb.Block, depth int) string {
 	}
 
 	return fmt.Sprintf(
-		"hotstuffpb.Proposal{\n"+
+		"hotstuffpb.Block{\n"+
 			"%s\tParent: %v\n"+
 			"%s\tQC: %v\n"+
 			"%s\tView: %v\n"+
@@ -102,7 +102,7 @@ func (timeoutFuzzMsg *TimeoutMsg) ToString(depth int) string {
 	}
 
 	return fmt.Sprintf(
-		"VoteFuzzMsg{\n"+
+		"twins.TimeoutMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tTimeoutMsg: %v\n"+
 			"%s}",
@@ -153,7 +153,7 @@ func (VoteFuzzMsg *VoteMsg) ToString(depth int) string {
 	}
 
 	return fmt.Sprintf(
-		"VoteMsg{\n"+
+		"twins.VoteMsg{\n"+
 			"%s\tDeferred: %v\n"+
 			"%s\tID: %v\n"+
 			"%s\tPartialCert: %v\n"+
@@ -183,7 +183,7 @@ func (newViewFuzzMsg *NewViewMsg) ToString(depth int) string {
 	}
 
 	return fmt.Sprintf(
-		"NewViewMsg{\n"+
+		"twins.NewViewMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tSyncInfo: %v\n"+
 			"%s}",
@@ -276,10 +276,10 @@ func AggQCToString(aggQC *hotstuffpb.AggQC, depth int) string {
 		QCsString += fmt.Sprintf("%v\t\t%v: %v\n", tabs, key, QuorumCertToString(value, depth+2))
 	}
 
-	QCsString += tabs + "]"
+	QCsString += tabs + "\t]"
 
 	return fmt.Sprintf(
-		"hotstuffpb.TimeoutCert{\n"+
+		"hotstuffpb.AggQC{\n"+
 			"%s\tQCs: %v\n"+
 			"%s\tSig: %v\n"+
 			"%s\tView: %v\n"+

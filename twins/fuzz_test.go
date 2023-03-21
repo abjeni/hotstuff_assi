@@ -1,7 +1,9 @@
 package twins
 
 import (
+	"encoding/gob"
 	"fmt"
+	"os"
 	"runtime/debug"
 	"strings"
 	"testing"
@@ -37,26 +39,70 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 
 	fmt.Println("ERROR INFO")
 
+	messages := make([]FuzzMsg, len(errorInfo.panics))
+
+	var i int = 0
 	for key, panics := range errorInfo.panics {
-		panic := panics[0]
+		i++
+		var panicInfo PanicInfo
+		var panicMsgLines int = 9999999
+
+		for _, panic := range panics {
+			str := panic.FuzzMsg.ToString(0)
+			lines := strings.Count(str, "\n")
+			if lines < panicMsgLines {
+				panicMsgLines = lines
+				panicInfo = panic
+			}
+		}
+
 		fmt.Println()
-		fmt.Println(panic.Err)
+		fmt.Printf("ERROR NUMBER %d\n", i)
+		fmt.Println(panicInfo.Err)
 		fmt.Println(key)
 		fmt.Println()
-		fmt.Println("- FUZZ MESSAGE BEGIN")
-		fmt.Println(panic.FuzzMsg.ToString(0))
-		fmt.Println("- FUZZ MESSAGE END")
-		fmt.Println()
 		fmt.Println("- STACK TRACE BEGIN")
-		fmt.Print(panic.StackTrace)
+		fmt.Print(panicInfo.StackTrace)
 		fmt.Println("- STACK TRACE END")
 		fmt.Println()
+		fmt.Println("- FUZZ MESSAGE BEGIN")
+		fmt.Println(panicInfo.FuzzMsg.ToString(0))
+		fmt.Println("- FUZZ MESSAGE END")
+		fmt.Println()
+		writeGob("message.gob", panicInfo.FuzzMsg)
+		fmt.Println()
+
+		messages = append(messages, panicInfo.FuzzMsg)
 	}
+
+	filename := "messages.gob"
 
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
 	fmt.Printf("%d of %d scenarios failed\n", errorInfo.failedScenarios, errorInfo.totalScenarios)
 	fmt.Printf("%d of %d messages failed\n", errorInfo.failedMessages, errorInfo.totalMessages)
+	fmt.Printf("saving unique failing messages to %s\n", filename)
+	writeGob(filename, messages)
+}
+
+func writeGob(filePath string, object interface{}) error {
+	file, err := os.Create(filePath)
+	if err == nil {
+		encoder := gob.NewEncoder(file)
+		encoder.Encode(object)
+	}
+	file.Close()
+	return err
+}
+
+func readGob(filePath string, object interface{}) error {
+	file, err := os.Open(filePath)
+	if err == nil {
+		decoder := gob.NewDecoder(file)
+		err = decoder.Decode(object)
+	}
+	file.Close()
+	return err
 }
 
 func (errorInfo *ErrorInfo) AddPanic(stack string, err any) {
@@ -178,7 +224,7 @@ func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg FuzzMsg) any {
 }
 
 func TestFuzz(t *testing.T) {
-	nilChance := 0.1
+	nilChance := 0.01
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
 		func(m *FuzzMsg, c fuzz.Continue) {
@@ -223,16 +269,13 @@ func TestFuzz(t *testing.T) {
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
 
-	for i := 0; i < 100; i++ {
-
+	for i := 0; i < 1000; i++ {
 		newFuzzMessage := getFuzzMessage(f, errorInfo)
 
 		errorInfo.currentFuzzMsg = newFuzzMessage
 
 		newMessage := fuzzMsgToMsg(errorInfo, newFuzzMessage)
-
 		if newMessage != nil {
-			//fmt.Printf("%T, %v\n", newMessage, newMessage)
 			fuzzScenario(t, errorInfo, newMessage)
 		}
 	}

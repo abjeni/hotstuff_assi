@@ -2,760 +2,195 @@ ERROR INFO
 
 ERROR NUMBER 1
 runtime error: invalid memory address or nil pointer dereference
-/home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
-
-- FUZZ MESSAGE BEGIN
-VoteFuzzMsg{
-	ID: 2038330148
-	TimeoutMsg: hotstuffpb.TimeoutMsg{
-		View: 12776183080827140320
-		SyncInfo: hotstuffpb.SyncInfo{
-			QC: hotstuffpb.QuorumCert{
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-						BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-							Sig: [244 20 231 178 19 114 244 230]
-							Participants: [147 179]
-						},
-					},
-				}
-				View: 6678726500610322041
-				Hash: [130 11 172 232]
-			}
-			TC: hotstuffpb.TimeoutCert{
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-						ECDASigs: hotstuffpb.ECDSAMultiSignature{
-							ECDASigs: [
-							]
-						}
-					},
-				}
-				View: 4326625447741330863
-			}
-			AggQC: hotstuffpb.TimeoutCert{
-				QCs: map[
-					1715804593: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-								BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-									Sig: []
-									Participants: [92 216]
-								},
-							},
-						}
-						View: 12816611844620606733
-						Hash: [160 199]
-					}
-					2283670578: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-								BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-									Sig: [54 101]
-									Participants: [18]
-								},
-							},
-						}
-						View: 7278812367541631046
-						Hash: [222 105 105 115 105 51 160]
-					}
-					3588221389: hotstuffpb.QuorumCert{
-						Sig: nil
-						View: 7586660584695973437
-						Hash: [239 216]
-					}
-					3462359919: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-								BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-									Sig: [73 176]
-									Participants: [107 6 21 33]
-								},
-							},
-						}
-						View: 10282915137702249526
-						Hash: [158 183 62]
-					}
-					1608544768: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-								BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-									Sig: [99 167 199 222 200 199]
-									Participants: [211 127 250 113 170 56]
-								},
-							},
-						}
-						View: 12554774163935473493
-						Hash: [102 124 3 107 145 217 108 242 165 182]
-					}
-					877185897: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-								BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-									Sig: [10 58 109 189 87 191 202]
-									Participants: [146 152 180 223]
-								},
-							},
-						}
-						View: 1829427101162538705
-						Hash: [210 177 243 224]
-					}
-			]
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-						BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-							Sig: [49 127 157 157]
-							Participants: [232 143 90 145 11 116 229 144]
-						},
-					},
-				}
-				View: 10253575278269095486
-			}
-		}
-		ViewSig: hotstuffpb.QuorumSignature{
-			Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-				BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-					Sig: [152 216 215 43 14 164 82]
-					Participants: [146 93 227]
-				},
-			},
-		}
-		MsgSig: hotstuffpb.QuorumSignature{
-			Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-				ECDASigs: hotstuffpb.ECDSAMultiSignature{
-					ECDASigs: [
-						hotstuffpb.ECDSASignature{
-							Signer: 2982247626
-							R: [23 151 205 226 0 173]
-							S: [147 90 94 228 125 206 120 57]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 1186756537
-							R: []
-							S: [205 202]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 3689684531
-							R: [29 143 132 197 34 83 157 35 53 87]
-							S: [91 64 164 255 129 219 202 172]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 407122097
-							R: [67 217 159 170 168 221 172]
-							S: [31 115]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 1856758738
-							R: [170 234]
-							S: [124 129 128 84 33 14 5 78]
-						}
-						nil
-						hotstuffpb.ECDSASignature{
-							Signer: 1548486265
-							R: [44 169 85 127 44 217 231 95 61 157]
-							S: []
-						}
-					]
-				}
-			},
-		}
-	}
-}
-- FUZZ MESSAGE END
+/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
 
 - STACK TRACE BEGIN
 goroutine 6 [running]:
 runtime/debug.Stack()
 	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
-github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:112 +0x3b
+github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:184 +0x3b
 panic({0x9489c0, 0xe1c0d0})
 	/usr/lib/go/src/runtime/panic.go:884 +0x213
-github.com/relab/hotstuff/crypto.(*cache).Verify(0xc000485740, {0x0, 0x0}, {0xc000689728, 0x8, 0x8})
-	/home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
-github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnRemoteTimeout(0xc0002a07e0, {0x797e7324, 0xb14e1ed2260eb8e0, {0x0, 0x0}, {0xaaf960, 0xc0003deff0}, {0xc0003a9b00, 0xc000013e30, 0xc00037ce00}})
-	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:210 +0xe6
-github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func3({0x9b5a20?, 0xc000423860?})
-	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:73 +0xd2
-github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc0000fc930, {0x9b5a20?, 0xc000423860?})
-	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
-github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc0000fc930)
-	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
-github.com/relab/hotstuff/twins.(*Network).tick(0xc0002bc000)
-	/home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
-github.com/relab/hotstuff/twins.(*Network).run(0xc0002bc000, 0x64)
-	/home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
-github.com/relab/hotstuff/twins.ExecuteScenario({0xc0000e2180, 0x4, 0x4}, 0x4, 0x0, 0xc000013ef0?, {0x9ee2b2, 0xf}, {0xc000187c30, 0x2, ...})
-	/home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
-github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc000579dd0?, {0xc0000e2180?, 0xc000294000?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:119 +0x149
-github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaead8?, {0x9b5a20, 0xc000423860})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:156 +0x4b5
+github.com/relab/hotstuff/internal/proto/hotstuffpb.(*QuorumSignature).GetECDSASigs(...)
+	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
+github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0xc0004be200?)
+	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:39 +0x45
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc000386ea8?)
+	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xbd
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc000386ea0)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:142 +0x66
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaeb60?, 0xc000386ea0?})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x6c
 github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:236 +0x15f
-testing.tRunner(0xc0000d2d00, 0xa28518)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:246 +0x145
+testing.tRunner(0xc0000d2d00, 0xa28538)
 	/usr/lib/go/src/testing/testing.go:1576 +0x10b
 created by testing.(*T).Run
 	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
 - STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+VoteMsg{
+	Deferred: 1770750249
+	ID: false
+	PartialCert: hotstuffpb.PartialCert{
+		Sig: hotstuffpb.QuorumSignature{
+			Sig: nil
+		}
+		Hash: [102 200 128 154 146 168 181]
+	}
+}
+- FUZZ MESSAGE END
+
 
 ERROR NUMBER 2
 runtime error: invalid memory address or nil pointer dereference
 /home/abje/git_clones/hotstuff_assi/crypto/crypto.go:112 +0x130
 
-- FUZZ MESSAGE BEGIN
-ProposeMsg{
-	ID: 3244261208
-	Proposal: hotstuffpb.Proposal{
-		Block: hotstuffpb.Proposal{
-			Parent: [67 220 171 116 46 168 113 126 219]
-			QC: hotstuffpb.QuorumCert{
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-						BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-							Sig: [2 11 111 124 13 124]
-							Participants: []
-						},
-					},
-				}
-				View: 425661369110544321
-				Hash: [29 109 44 233 14 46]
-			}
-			View: 3940475020135066965
-			Command: [96 193 74 122 22 156 5 30]
-			Proposer: 3794253721
-		}
-		AggQC: hotstuffpb.TimeoutCert{
-			QCs: map[
-				39880428: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-							BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-								Sig: [155 119 208 57 104 17 139]
-								Participants: [50 71 45 190 243 78 118 133]
-							},
-						},
-					}
-					View: 16162308944682893602
-					Hash: [183 232 201]
-				}
-				958548645: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-							BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-								Sig: [180 85 136 26 225 186 146 181 90 172]
-								Participants: [199 62 88 109 209 57 42]
-							},
-						},
-					}
-					View: 12798420438790667471
-					Hash: [45 162 242 20 28 241 91]
-				}
-				3816129466: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-							BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-								Sig: [220]
-								Participants: [117 184 153 156 241]
-							},
-						},
-					}
-					View: 4439256280673139901
-					Hash: [210 186 238 59 240 144]
-				}
-				795620375: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-							BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-								Sig: [177 52]
-								Participants: [3 45 214 6 229 184]
-							},
-						},
-					}
-					View: 10027397595785984502
-					Hash: [59 50 53 100 163]
-				}
-				1207459719: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-							ECDASigs: hotstuffpb.ECDSAMultiSignature{
-								ECDASigs: [
-									hotstuffpb.ECDSASignature{
-										Signer: 24321548
-										R: [238 233 45 167 208]
-										S: [231 57]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 946603959
-										R: [113 20 69]
-										S: []
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 343124192
-										R: [208 248 251 112 107 83 134 192 101]
-										S: [173 95]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 4281190098
-										R: []
-										S: [115 149 131 140 204 156 32 15 166]
-									}
-								]
-							}
-						},
-					}
-					View: 16640911291408836351
-					Hash: [240 174 75 195]
-				}
-				770769871: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-							BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-								Sig: [225 240 83 227]
-								Participants: [212 45]
-							},
-						},
-					}
-					View: 947476816652164140
-					Hash: [131 22 114 44 97 198 216 22 185]
-				}
-				260104087: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-							ECDASigs: hotstuffpb.ECDSAMultiSignature{
-								ECDASigs: [
-									hotstuffpb.ECDSASignature{
-										Signer: 285671716
-										R: [252 220 135 55 65 167 222 1]
-										S: []
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 731942424
-										R: [208 209 150 30 217 190 214 152]
-										S: []
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 3684941183
-										R: [62 74 59 175 15 56]
-										S: [206 23 48 149 205 170 76 76 169]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 3299773792
-										R: [105 207 71 28]
-										S: [103 248 230 252 13 213]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 221092694
-										R: []
-										S: [45]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 2444820812
-										R: [161 223 163 252 213 144]
-										S: [193 181 255 193 251 32 145 14 38 16]
-									}
-								]
-							}
-						},
-					}
-					View: 17068535971145140869
-					Hash: [53 102 134 142 179 43 143 138 159]
-				}
-		]
-			Sig: hotstuffpb.QuorumSignature{
-				Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-					BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-						Sig: [204 32 48 53 123 16 11]
-						Participants: [190 92 22 112 187 245 23 155 55 78]
-					},
-				},
-			}
-			View: 7646360616684089575
-		}
-	}
-}
-- FUZZ MESSAGE END
-
 - STACK TRACE BEGIN
 goroutine 6 [running]:
 runtime/debug.Stack()
 	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
 github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:112 +0x3b
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:126 +0x3b
 panic({0x9489c0, 0xe1c0d0})
 	/usr/lib/go/src/runtime/panic.go:884 +0x213
-github.com/relab/hotstuff/crypto.crypto.VerifyQuorumCert({{0xab1e58, 0xc0001305b0}, {0xab4278, 0xc0003bd440}, {0xab16e0, 0xc000115620}}, {{0x0, 0x0}, 0x5e840c28c70bfc1, {0x1d, ...}})
-	/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:113 +0x130
-github.com/relab/hotstuff/consensus.(*consensusBase).OnPropose(0xc0003cc1e0, {0x0?, 0xc0001ba280?, 0xc00007a980?})
+github.com/relab/hotstuff/crypto.crypto.VerifyQuorumCert({{0xab1eb8, 0xc0005bfc70}, {0xab42d8, 0xc000a8d5a0}, {0xab1740, 0xc000a85c20}}, {{0x0, 0x0}, 0x0, {0x0, ...}})
+	/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:112 +0x130
+github.com/relab/hotstuff/consensus.(*consensusBase).OnPropose(0xc00057c1e0, {0x0?, 0xc0006c6460?, 0x0?})
 	/home/abje/git_clones/hotstuff_assi/consensus/consensus.go:181 +0x3ed
-github.com/relab/hotstuff/consensus.(*consensusBase).InitModule.func1({0x998f60?, 0xc0000130f8?})
+github.com/relab/hotstuff/consensus.(*consensusBase).InitModule.func1({0x998f60?, 0xc00045b2d8?})
 	/home/abje/git_clones/hotstuff_assi/consensus/consensus.go:94 +0x45
-github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc000130540, {0x998f60?, 0xc0000130f8?})
+github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc0005bfc00, {0x998f60?, 0xc00045b2d8?})
 	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
-github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc000130540)
+github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc0005bfc00)
 	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
-github.com/relab/hotstuff/twins.(*Network).tick(0xc0003c8000)
+github.com/relab/hotstuff/twins.(*Network).tick(0xc0005ae000)
 	/home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
-github.com/relab/hotstuff/twins.(*Network).run(0xc0003c8000, 0x64)
+github.com/relab/hotstuff/twins.(*Network).run(0xc0005ae000, 0x64)
 	/home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
-github.com/relab/hotstuff/twins.ExecuteScenario({0xc0000e2400, 0x4, 0x4}, 0x4, 0x0, 0xc000013110?, {0x9ee2b2, 0xf}, {0xc000187c30, 0x2, ...})
+github.com/relab/hotstuff/twins.ExecuteScenario({0xc0006de600, 0x4, 0x4}, 0x4, 0x0, 0xc00045b2f0?, {0x9ee2b2, 0xf}, {0xc000131c30, 0x2, ...})
 	/home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
-github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc0001234d0?, {0xc0000e2400?, 0xc0001b8400?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:119 +0x149
-github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaeab0?, {0x998f60, 0xc0000130f8})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:156 +0x4b5
+github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc0004cf0e0?, {0xc0006de600?, 0xc000434600?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:133 +0x149
+github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaeb10?, {0x998f60, 0xc00045b2d8})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x4b5
 github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:236 +0x15f
-testing.tRunner(0xc0000d2d00, 0xa28518)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:250 +0x15f
+testing.tRunner(0xc0000d2d00, 0xa28538)
 	/usr/lib/go/src/testing/testing.go:1576 +0x10b
 created by testing.(*T).Run
 	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
 - STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+ProposeMsg{
+	ID: 3745466538
+	Proposal: hotstuffpb.Proposal{
+		Block: nil
+		AggQC: nil
+	}
+}
+- FUZZ MESSAGE END
 
 
 ERROR NUMBER 3
 runtime error: invalid memory address or nil pointer dereference
-/home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
-
-- FUZZ MESSAGE BEGIN
-VoteMsg{
-	Deferred: 783527154
-	ID: false
-	PartialCert: hotstuffpb.PartialCert{
-		Sig: hotstuffpb.QuorumSignature{
-			Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-				BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-					Sig: [42 106 180]
-					Participants: [147 159 18]
-				},
-			},
-		}
-		Hash: [35 29 37 182 223 204 196 84]
-	}
-}
-- FUZZ MESSAGE END
-
-- STACK TRACE BEGIN
-goroutine 6 [running]:
-runtime/debug.Stack()
-	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
-github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x3b
-panic({0x9489c0, 0xe1c0d0})
-	/usr/lib/go/src/runtime/panic.go:884 +0x213
-github.com/relab/hotstuff.NewPartialCert({0x0, 0x0}, {0x23, 0x1d, 0x25, 0xb6, 0xdf, 0xcc, 0xc4, 0x54, ...})
-	/home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
-github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc0001f81e8?)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xd5
-github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc0001f81e0)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:142 +0x66
-github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaeb00?, 0xc0001f81e0?})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:177 +0x6c
-github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:232 +0x145
-testing.tRunner(0xc0000d2d00, 0xa28518)
-	/usr/lib/go/src/testing/testing.go:1576 +0x10b
-created by testing.(*T).Run
-	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
-- STACK TRACE END
-
-
-ERROR NUMBER 4
-runtime error: invalid memory address or nil pointer dereference
 /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:612
 
-- FUZZ MESSAGE BEGIN
-VoteMsg{
-	Deferred: 484753737
-	ID: false
-	PartialCert: hotstuffpb.PartialCert{
-		Sig: hotstuffpb.QuorumSignature{
-			Sig: nil
-		}
-		Hash: [108 189 20 173 87 89]
-	}
-}
-- FUZZ MESSAGE END
-
 - STACK TRACE BEGIN
 goroutine 6 [running]:
 runtime/debug.Stack()
 	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
 github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x3b
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:184 +0x3b
 panic({0x9489c0, 0xe1c0d0})
 	/usr/lib/go/src/runtime/panic.go:884 +0x213
 github.com/relab/hotstuff/internal/proto/hotstuffpb.(*QuorumSignature).GetBLS12Sig(...)
 	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:612
-github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0x54c4ccdfb6251d23?)
+github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0x0?)
 	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:50 +0xb9
-github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc0001f8368?)
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc00069efc8?)
 	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xbd
-github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc0001f8360)
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc00069efc0)
 	/home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:142 +0x66
-github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaeb00?, 0xc0001f8360?})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:177 +0x6c
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaeb60?, 0xc00069efc0?})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x6c
 github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:232 +0x145
-testing.tRunner(0xc0000d2d00, 0xa28518)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:246 +0x145
+testing.tRunner(0xc0000d2d00, 0xa28538)
 	/usr/lib/go/src/testing/testing.go:1576 +0x10b
 created by testing.(*T).Run
 	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
 - STACK TRACE END
 
-
-ERROR NUMBER 5
-runtime error: invalid memory address or nil pointer dereference
-/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:128 +0x64
-
 - FUZZ MESSAGE BEGIN
-NewViewMsg{
-	ID: 3206443503
-	SyncInfo: hotstuffpb.SyncInfo{
-		QC: hotstuffpb.QuorumCert{
-			Sig: hotstuffpb.QuorumSignature{
-				Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-					BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-						Sig: [140 56 52 147 2 121 121 163 90]
-						Participants: [101 39 216 239 88 17 135]
-					},
-				},
-			}
-			View: 8323836690713334090
-			Hash: [253]
-		}
-		TC: hotstuffpb.TimeoutCert{
+VoteMsg{
+	Deferred: 3939156344
+	ID: true
+	PartialCert: hotstuffpb.PartialCert{
+		Sig: hotstuffpb.QuorumSignature{
 			Sig: nil
-			View: 15483978398193412165
 		}
-		AggQC: hotstuffpb.TimeoutCert{
-			QCs: map[
-				1048131745: hotstuffpb.QuorumCert{
-					Sig: hotstuffpb.QuorumSignature{
-						Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-							ECDASigs: hotstuffpb.ECDSAMultiSignature{
-								ECDASigs: [
-									hotstuffpb.ECDSASignature{
-										Signer: 2719702130
-										R: [116 76 110 36 223 252 172 208 64]
-										S: [79 158 255 59 69 28 55]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 775511418
-										R: [220 224]
-										S: [56 188 5 11 74 25 121]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 3229688065
-										R: [31 117 231 123 157]
-										S: [45 102 63 130 229 45 66]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 3374991689
-										R: [169 209 195]
-										S: [145 128 52]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 1415461198
-										R: []
-										S: [251 57]
-									}
-									hotstuffpb.ECDSASignature{
-										Signer: 2684839972
-										R: []
-										S: [81 181 18 97 57 64 131 43]
-									}
-								]
-							}
-						},
-					}
-					View: 11502856869954101087
-					Hash: [172 195 80 99 10]
-				}
-				2160723582: hotstuffpb.QuorumCert{
-					Sig: nil
-					View: 13748333271620893791
-					Hash: [239 93 146 176 161]
-				}
-		]
-			Sig: hotstuffpb.QuorumSignature{
-				Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-					ECDASigs: hotstuffpb.ECDSAMultiSignature{
-						ECDASigs: [
-							hotstuffpb.ECDSASignature{
-								Signer: 1854429131
-								R: [15]
-								S: [244 5 57 93 151 42 4 42 105 232]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 3108731171
-								R: [136]
-								S: [197 32 81 44 187 200 254 142 57 55]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 3264433100
-								R: [240 2 248]
-								S: [212 98 48 71 47 118 122 43]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 928823075
-								R: [84 207 236 146 237 184 205 233]
-								S: [63 87]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 3820589132
-								R: [221 54]
-								S: [32 89 33]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 3664149732
-								R: [222 40 72 232 27 141 250]
-								S: [187 254 134]
-							}
-							hotstuffpb.ECDSASignature{
-								Signer: 619454399
-								R: []
-								S: [91 255 173]
-							}
-						]
-					}
-				},
-			}
-			View: 13753051376153335504
-		}
+		Hash: [48 66 188 30 55 131 240]
 	}
 }
 - FUZZ MESSAGE END
+
+
+ERROR NUMBER 4
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
 
 - STACK TRACE BEGIN
 goroutine 6 [running]:
 runtime/debug.Stack()
 	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
 github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:112 +0x3b
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:126 +0x3b
 panic({0x9489c0, 0xe1c0d0})
 	/usr/lib/go/src/runtime/panic.go:884 +0x213
-github.com/relab/hotstuff/crypto.crypto.VerifyTimeoutCert({{0xab1e58, 0xc00016a770}, {0xab4278, 0xc0002e8b80}, {0xab16e0, 0xc00047bce0}}, {{0x0?, 0x0?}, 0xaac3a0?})
-	/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:129 +0x64
-github.com/relab/hotstuff/synchronizer.(*Synchronizer).AdvanceView(0xc0000ce7e0, {0xc0001fc8c0?, 0xc000608918?, 0xc00044a760?})
-	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:273 +0xb6
-github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnNewView(...)
-	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:262
-github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func2({0x96c4e0?, 0xc00044a780?})
-	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:68 +0x46
-github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc00016a700, {0x96c4e0?, 0xc00044a780?})
+github.com/relab/hotstuff/crypto.(*cache).Verify(0xc001729560, {0x0, 0x0}, {0xc00140b680, 0x8, 0x8})
+	/home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnRemoteTimeout(0xc002a58900, {0x54e1d84a, 0x16294b2a4ff71886, {0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0, 0x0}})
+	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:210 +0xe6
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func3({0x9b5a20?, 0xc0026b5b30?})
+	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:73 +0xd2
+github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc0023a58f0, {0x9b5a20?, 0xc0026b5b30?})
 	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
-github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc00016a700)
+github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc0023a58f0)
 	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
-github.com/relab/hotstuff/twins.(*Network).tick(0xc0000baf20)
+github.com/relab/hotstuff/twins.(*Network).tick(0xc000eee0b0)
 	/home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
-github.com/relab/hotstuff/twins.(*Network).run(0xc0000baf20, 0x64)
+github.com/relab/hotstuff/twins.(*Network).run(0xc000eee0b0, 0x64)
 	/home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
-github.com/relab/hotstuff/twins.ExecuteScenario({0xc00021c280, 0x4, 0x4}, 0x4, 0x0, 0xc000608a68?, {0x9ee2b2, 0xf}, {0xc000187c30, 0x2, ...})
+github.com/relab/hotstuff/twins.ExecuteScenario({0xc002b12100, 0x4, 0x4}, 0x4, 0x0, 0xc001654198?, {0x9ee2b2, 0xf}, {0xc001695c30, 0x2, ...})
 	/home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
-github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc000305f80?, {0xc00021c280?, 0xc000650400?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:119 +0x149
-github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaea88?, {0x96c4e0, 0xc00044a780})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:156 +0x4b5
+github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc00166e900?, {0xc002b12100?, 0xc000ce4200?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:133 +0x149
+github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaeb38?, {0x9b5a20, 0xc0026b5b30})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x4b5
 github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:236 +0x15f
-testing.tRunner(0xc0000d2d00, 0xa28518)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:250 +0x15f
+testing.tRunner(0xc0000d2d00, 0xa28538)
 	/usr/lib/go/src/testing/testing.go:1576 +0x10b
 created by testing.(*T).Run
 	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
 - STACK TRACE END
 
-
-ERROR NUMBER 6
-runtime error: invalid memory address or nil pointer dereference
-/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
-
 - FUZZ MESSAGE BEGIN
 VoteFuzzMsg{
-	ID: 1500601628
+	ID: 1424087114
 	TimeoutMsg: hotstuffpb.TimeoutMsg{
-		View: 451910738727534465
-		SyncInfo: hotstuffpb.SyncInfo{
-			QC: hotstuffpb.QuorumCert{
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: hotstuffpb.QuorumSignature_BLS12Sig{
-						BLS12Sig: hotstuffpb.BLS12AggregateSignature{
-							Sig: [193 33 158 49 106 19]
-							Participants: [18 146 29 140 200]
-						},
-					},
-				}
-				View: 4311306735344796844
-				Hash: [25 49]
-			}
-			TC: hotstuffpb.TimeoutCert{
-				Sig: hotstuffpb.QuorumSignature{
-					Sig: nil
-				}
-				View: 821871104762857020
-			}
-			AggQC: hotstuffpb.TimeoutCert{
-				QCs: map[
-					1673517781: hotstuffpb.QuorumCert{
-						Sig: hotstuffpb.QuorumSignature{
-							Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-								ECDASigs: hotstuffpb.ECDSAMultiSignature{
-									ECDASigs: [
-									]
-								}
-							},
-						}
-						View: 17620417951411841637
-						Hash: [115 48 161]
-					}
-			]
-				Sig: nil
-				View: 7713640669907259824
-			}
-		}
+		View: 1596890187981854854
+		SyncInfo: nil
 		ViewSig: hotstuffpb.QuorumSignature{
-			Sig: hotstuffpb.QuorumSignature_ECDSASigs{
-				ECDASigs: hotstuffpb.ECDSAMultiSignature{
-					ECDASigs: [
-						hotstuffpb.ECDSASignature{
-							Signer: 239036022
-							R: [207 107 202 231 196]
-							S: [227 88 112 53 68 11 114 84 233]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 1929090950
-							R: [83 65 186]
-							S: [126]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 3711949123
-							R: [16 153 184 250 26 185 149 175 167 168]
-							S: [224 22]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 3886342028
-							R: [190 64]
-							S: [247 124 194 47 84 232 155]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 3678639330
-							R: [255 85 145 180]
-							S: [205 79 81 61 1 182 174 45]
-						}
-						nil
-						nil
-						hotstuffpb.ECDSASignature{
-							Signer: 3965267306
-							R: [101 178 87 54 225 45 36 178]
-							S: [205 84 134 81 32]
-						}
-						hotstuffpb.ECDSASignature{
-							Signer: 289021822
-							R: [37 46 25 94 243 249 44 14 110]
-							S: [122 198 12 84 221]
-						}
-					]
-				}
+			Sig: hotstuffpb.QuorumSignature_BLS12Sig{
+				BLS12Sig: hotstuffpb.BLS12AggregateSignature{
+					Sig: [152]
+					Participants: [129 30 118 162 62 231]
+				},
 			},
 		}
 		MsgSig: hotstuffpb.QuorumSignature{
@@ -767,37 +202,122 @@ VoteFuzzMsg{
 }
 - FUZZ MESSAGE END
 
+
+ERROR NUMBER 5
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:128 +0x64
+
 - STACK TRACE BEGIN
 goroutine 6 [running]:
 runtime/debug.Stack()
 	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
-github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x3b
+github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:126 +0x3b
 panic({0x9489c0, 0xe1c0d0})
 	/usr/lib/go/src/runtime/panic.go:884 +0x213
-github.com/relab/hotstuff/internal/proto/hotstuffpb.(*QuorumSignature).GetECDSASigs(...)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
-github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0x1?)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:39 +0x45
-github.com/relab/hotstuff/internal/proto/hotstuffpb.TimeoutCertFromProto(0xc0005e6280)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:167 +0x2e
-github.com/relab/hotstuff/internal/proto/hotstuffpb.SyncInfoFromProto(0xc0005e61c0)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:203 +0x167
-github.com/relab/hotstuff/internal/proto/hotstuffpb.TimeoutMsgFromProto(0xc00046af58)
-	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:143 +0x73
-github.com/relab/hotstuff/twins.(*TimeoutMsg).ToMsg(0xc00046af50)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:92 +0x3c
-github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaead8?, 0xc00046af50?})
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:177 +0x6c
+github.com/relab/hotstuff/crypto.crypto.VerifyTimeoutCert({{0xab1eb8, 0xc0002f4620}, {0xab42d8, 0xc0004ab920}, {0xab1740, 0xc0002dbf80}}, {{0x0?, 0x0?}, 0xc0004bcea0?})
+	/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:128 +0x64
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).AdvanceView(0xc0003e66c0, {0xc000482340?, 0xc00023fba8?, 0x0?})
+	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:273 +0xb6
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnNewView(...)
+	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:262
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func2({0x96c4e0?, 0xc000284540?})
+	/home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:68 +0x46
+github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc0002f45b0, {0x96c4e0?, 0xc000284540?})
+	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
+github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc0002f45b0)
+	/home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
+github.com/relab/hotstuff/twins.(*Network).tick(0xc000484000)
+	/home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
+github.com/relab/hotstuff/twins.(*Network).run(0xc000484000, 0x64)
+	/home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
+github.com/relab/hotstuff/twins.ExecuteScenario({0xc00021c200, 0x4, 0x4}, 0x4, 0x0, 0xc00023fbc0?, {0x9ee2b2, 0xf}, {0xc000187c30, 0x2, ...})
+	/home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
+github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d2d00, 0xc0004bc030?, {0xc00021c200?, 0xc0002fe000?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9ee2b2, 0xf}, ...)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:133 +0x149
+github.com/relab/hotstuff/twins.fuzzScenario(0xc0000246e0?, 0xaaeae8?, {0x96c4e0, 0xc000284540})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:170 +0x4b5
 github.com/relab/hotstuff/twins.TestFuzz(0x0?)
-	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:232 +0x145
-testing.tRunner(0xc0000d2d00, 0xa28518)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:250 +0x15f
+testing.tRunner(0xc0000d2d00, 0xa28538)
 	/usr/lib/go/src/testing/testing.go:1576 +0x10b
 created by testing.(*T).Run
 	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
 - STACK TRACE END
 
+- FUZZ MESSAGE BEGIN
+NewViewMsg{
+	ID: 4100604945
+	SyncInfo: hotstuffpb.SyncInfo{
+		QC: hotstuffpb.QuorumCert{
+			Sig: hotstuffpb.QuorumSignature{
+				Sig: hotstuffpb.QuorumSignature_BLS12Sig{
+					BLS12Sig: hotstuffpb.BLS12AggregateSignature{
+						Sig: [208 158 84 32]
+						Participants: [117 208 138 132 23 237 164]
+					},
+				},
+			}
+			View: 8878503688739280836
+			Hash: [97 37 84 52 164 52]
+		}
+		TC: hotstuffpb.TimeoutCert{
+			Sig: hotstuffpb.QuorumSignature{
+				Sig: hotstuffpb.QuorumSignature_BLS12Sig{
+					BLS12Sig: hotstuffpb.BLS12AggregateSignature{
+						Sig: [97 43 221 93 82 237 25 65]
+						Participants: [231 55 23 167 196 252 109 167]
+					},
+				},
+			}
+			View: 17172483342469943423
+		}
+		AggQC: nil
+	}
+}
+- FUZZ MESSAGE END
+
+
+ERROR NUMBER 6
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+	/usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:184 +0x3b
+panic({0x9489c0, 0xe1c0d0})
+	/usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff.NewPartialCert({0x0, 0x0}, {0x35, 0x7, 0x37, 0xc4, 0xa0, 0x19, 0x7e, 0xee, ...})
+	/home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc00027fc88?)
+	/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xd5
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc00027fc80)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:142 +0x66
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0xc0000246e0?, {0xaaeb60?, 0xc00027fc80?})
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x6c
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+	/home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:246 +0x145
+testing.tRunner(0xc0000d2d00, 0xa28538)
+	/usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+VoteMsg{
+	Deferred: 654205439
+	ID: true
+	PartialCert: hotstuffpb.PartialCert{
+		Sig: nil
+		Hash: [53 7 55 196 160 25 126 238 50 9]
+	}
+}
+- FUZZ MESSAGE END
+
 unique errors found: 6
-853 runs were errors
-810 of 1710 scenarios failed
-43 of 100 messages failed
+9178 runs were errors
+8790 of 18360 scenarios failed
+388 of 1000 messages failed
