@@ -1,9 +1,8 @@
 package twins
 
 import (
-	"encoding/gob"
+	"flag"
 	"fmt"
-	"os"
 	"runtime/debug"
 	"strings"
 	"testing"
@@ -19,6 +18,7 @@ type PanicInfo struct {
 }
 
 type ErrorInfo struct {
+	messageFile     string
 	currentFuzzMsg  FuzzMsg
 	errorCount      int
 	panics          map[string][]PanicInfo
@@ -39,7 +39,7 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 
 	fmt.Println("ERROR INFO")
 
-	messages := make([]FuzzMsg, len(errorInfo.panics))
+	messages := make([]FuzzMsg, 0)
 
 	var i int = 0
 	for key, panics := range errorInfo.panics {
@@ -66,43 +66,18 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 		fmt.Println("- STACK TRACE END")
 		fmt.Println()
 		fmt.Println("- FUZZ MESSAGE BEGIN")
-		fmt.Println(panicInfo.FuzzMsg.ToString(0))
+		str := panicInfo.FuzzMsg.ToString(0)
+		fmt.Println(str)
 		fmt.Println("- FUZZ MESSAGE END")
-		fmt.Println()
-		writeGob("message.gob", panicInfo.FuzzMsg)
 		fmt.Println()
 
 		messages = append(messages, panicInfo.FuzzMsg)
 	}
 
-	filename := "messages.gob"
-
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
 	fmt.Printf("%d of %d scenarios failed\n", errorInfo.failedScenarios, errorInfo.totalScenarios)
 	fmt.Printf("%d of %d messages failed\n", errorInfo.failedMessages, errorInfo.totalMessages)
-	fmt.Printf("saving unique failing messages to %s\n", filename)
-	writeGob(filename, messages)
-}
-
-func writeGob(filePath string, object interface{}) error {
-	file, err := os.Create(filePath)
-	if err == nil {
-		encoder := gob.NewEncoder(file)
-		encoder.Encode(object)
-	}
-	file.Close()
-	return err
-}
-
-func readGob(filePath string, object interface{}) error {
-	file, err := os.Open(filePath)
-	if err == nil {
-		decoder := gob.NewDecoder(file)
-		err = decoder.Decode(object)
-	}
-	file.Close()
-	return err
 }
 
 func (errorInfo *ErrorInfo) AddPanic(stack string, err any) {
@@ -223,8 +198,17 @@ func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg FuzzMsg) any {
 	return fuzzMsg.ToMsg()
 }
 
+func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage FuzzMsg) {
+	errorInfo.currentFuzzMsg = fuzzMessage
+
+	newMessage := fuzzMsgToMsg(errorInfo, fuzzMessage)
+	if newMessage != nil {
+		fuzzScenario(t, errorInfo, newMessage)
+	}
+}
+
 func TestFuzz(t *testing.T) {
-	nilChance := 0.01
+	nilChance := 0.1
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
 		func(m *FuzzMsg, c fuzz.Continue) {
@@ -266,18 +250,15 @@ func TestFuzz(t *testing.T) {
 		},
 	)
 
+	flag.Parse()
+
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
 
 	for i := 0; i < 1000; i++ {
-		newFuzzMessage := getFuzzMessage(f, errorInfo)
-
-		errorInfo.currentFuzzMsg = newFuzzMessage
-
-		newMessage := fuzzMsgToMsg(errorInfo, newFuzzMessage)
-		if newMessage != nil {
-			fuzzScenario(t, errorInfo, newMessage)
-		}
+		fmt.Println(i, " of 1000")
+		fuzzMessage := getFuzzMessage(f, errorInfo)
+		useFuzzMessage(t, errorInfo, fuzzMessage)
 	}
 
 	errorInfo.OutputInfo()
