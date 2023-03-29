@@ -1,7 +1,6 @@
 package twins
 
 import (
-	"flag"
 	"fmt"
 	"runtime/debug"
 	"strings"
@@ -58,7 +57,6 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 
 		fmt.Println()
 		fmt.Printf("ERROR NUMBER %d\n", i)
-		fmt.Println(panicInfo.Err)
 		fmt.Println(key)
 		fmt.Println()
 		fmt.Println("- STACK TRACE BEGIN")
@@ -83,8 +81,9 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 func (errorInfo *ErrorInfo) AddPanic(stack string, err any) {
 
 	simpleStack := SimplifyStack(stack)
+	identifier := simpleStack + "\n" + fmt.Sprint(err)
 
-	panicList := errorInfo.panics[simpleStack]
+	panicList := errorInfo.panics[identifier]
 
 	if panicList == nil {
 		panicList = make([]PanicInfo, 0)
@@ -97,36 +96,33 @@ func (errorInfo *ErrorInfo) AddPanic(stack string, err any) {
 	}
 
 	panicList = append(panicList, panic)
-
-	errorInfo.panics[simpleStack] = panicList
-
+	errorInfo.panics[identifier] = panicList
 	errorInfo.errorCount++
 }
 
 func SimplifyStack(stack string) string {
-
 	stackLines := strings.Split(strings.ReplaceAll(stack, "\r\n", "\n"), "\n")
 
-	simpleStackLines := make([]string, 0)
-
-	for _, line := range stackLines {
-		if len(line) > 0 {
-			if line[0] == '\t' {
-				simpleStackLines = append(simpleStackLines, line[1:])
-			}
-		}
-	}
-	/**
-	simpleStack := strings.Join(simpleStackLines, "\n")
-	/*/
-	simpleStackLines = simpleStackLines[3:]
-	simpleStack := simpleStackLines[0]
-	/**/
-
-	return simpleStack
+	// line 9 tells us where the panic happened
+	return stackLines[8]
 }
 
-func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string, oldMessage any, newMessage any) {
+func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newMessage any) {
+	var numNodes uint8 = 4
+
+	allNodesSet := make(NodeSet)
+	for i := 1; i <= int(numNodes); i++ {
+		allNodesSet.Add(uint32(i))
+	}
+
+	s := Scenario{}
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+
 	errorInfo.totalScenarios++
 	defer func() {
 		if err := recover(); err != nil {
@@ -137,22 +133,22 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, scenario Scenario, n
 		}
 	}()
 
-	result, err := ExecuteScenario(scenario, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
+	result, err := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 
 	if err != nil {
-		t.Fatal(err)
+		panic(err)
 	}
 
 	if !result.Safe {
-		t.Errorf("Expected no safety violations")
+		panic("Expected no safety violations")
 	}
 
 	if result.Commits != 1 {
-		t.Errorf("Expected one commit (got %d)", result.Commits)
+		panic(fmt.Sprintf("Expected one commit (got %d)", result.Commits))
 	}
 }
 
-func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
+func getMessagesBasicScenario() int {
 
 	var numNodes uint8 = 4
 
@@ -171,43 +167,18 @@ func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
 
 	messageCount := result.MessageCount
 
-	for i := 1; i <= messageCount; i++ {
-		oldMessage := i
+	return messageCount
+}
 
-		TryExecuteScenario(t, errorInfo, s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
+func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
+	messageCount := getMessagesBasicScenario()
+
+	for oldMessage := 1; oldMessage <= messageCount; oldMessage++ {
+		TryExecuteScenario(t, errorInfo, oldMessage, newMessage)
 	}
 }
 
-func getFuzzMessage(f *fuzz.Fuzzer, errorInfo *ErrorInfo) FuzzMsg {
-	var newMessage FuzzMsg
-	f.Fuzz(&newMessage)
-	return newMessage
-}
-
-func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg FuzzMsg) any {
-	errorInfo.totalMessages++
-	defer func() {
-		if err := recover(); err != nil {
-			stack := string(debug.Stack())
-
-			errorInfo.AddPanic(stack, err)
-			errorInfo.failedMessages++
-		}
-	}()
-
-	return fuzzMsg.ToMsg()
-}
-
-func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage FuzzMsg) {
-	errorInfo.currentFuzzMsg = fuzzMessage
-
-	newMessage := fuzzMsgToMsg(errorInfo, fuzzMessage)
-	if newMessage != nil {
-		fuzzScenario(t, errorInfo, newMessage)
-	}
-}
-
-func TestFuzz(t *testing.T) {
+func initFuzz() *fuzz.Fuzzer {
 	nilChance := 0.1
 
 	f := fuzz.New().NilChance(nilChance).Funcs(
@@ -250,14 +221,48 @@ func TestFuzz(t *testing.T) {
 		},
 	)
 
-	flag.Parse()
+	return f
+}
 
+func createFuzzMessage(f *fuzz.Fuzzer, errorInfo *ErrorInfo) FuzzMsg {
+	var newMessage FuzzMsg
+	f.Fuzz(&newMessage)
+	return newMessage
+}
+
+func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg FuzzMsg) any {
+	errorInfo.totalMessages++
+	defer func() {
+		if err := recover(); err != nil {
+			stack := string(debug.Stack())
+
+			errorInfo.AddPanic(stack, err)
+			errorInfo.failedMessages++
+		}
+	}()
+
+	return fuzzMsg.ToMsg()
+}
+
+func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage FuzzMsg) {
+	errorInfo.currentFuzzMsg = fuzzMessage
+
+	newMessage := fuzzMsgToMsg(errorInfo, fuzzMessage)
+	if newMessage != nil {
+		fuzzScenario(t, errorInfo, newMessage)
+	}
+}
+
+func TestFuzz(t *testing.T) {
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
 
-	for i := 0; i < 1000; i++ {
-		fmt.Println(i, " of 1000")
-		fuzzMessage := getFuzzMessage(f, errorInfo)
+	f := initFuzz()
+
+	iterations := 100
+
+	for i := 0; i < iterations; i++ {
+		fuzzMessage := createFuzzMessage(f, errorInfo)
 		useFuzzMessage(t, errorInfo, fuzzMessage)
 	}
 

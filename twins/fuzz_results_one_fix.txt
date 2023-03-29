@@ -1,0 +1,253 @@
+ERROR INFO
+
+ERROR NUMBER 1
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+        /usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x3b
+panic({0x94f9c0, 0xe27260})
+        /usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff/internal/proto/hotstuffpb.(*QuorumSignature).GetECDSASigs(...)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:605
+github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0x9072a0?)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:39 +0x45
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc0005bdec8?)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xbd
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc0005bdec0)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:56 +0x66
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0x194?, {0xab9270?, 0xc0005bdec0?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:198 +0x6c
+github.com/relab/hotstuff/twins.useFuzzMessage(0xc000098640?, 0xc00001df10, {0xab9270?, 0xc0005bdec0?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:204 +0x5b
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:261 +0x1f3
+testing.tRunner(0xc0000d6d00, 0xa30318)
+        /usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+        /usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+twins.VoteMsg{
+        Deferred: 2441118864
+        ID: false
+        PartialCert: hotstuffpb.PartialCert{
+                Sig: *hotstuffpb.QuorumSignature{
+                        Sig: nil
+                }
+                Hash: [228 129 99 93 253 158 37 62]
+        }
+}
+- FUZZ MESSAGE END
+
+
+ERROR NUMBER 2
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/crypto/crypto.go:131 +0x64
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+        /usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:133 +0x3b
+panic({0x94f9c0, 0xe27260})
+        /usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff/crypto.crypto.VerifyTimeoutCert({{0xabaef8, 0xc00018cbd0}, {0xabd318, 0xc0002b6760}, {0xaba780, 0xc0005bc300}}, {{0x0?, 0x0?}, 0xc00001d02e?})
+        /home/abje/git_clones/hotstuff_assi/crypto/crypto.go:131 +0x64
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).AdvanceView(0xc0003f10e0, {0x0?, 0xc000265080?, 0x0?})
+        /home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:273 +0xb6
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnNewView(...)
+        /home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:262
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func2({0x9734e0?, 0xc000626300?})
+        /home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:68 +0x46
+github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc00018cb60, {0x9734e0?, 0xc000626300?})
+        /home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
+github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc00018cb60)
+        /home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
+github.com/relab/hotstuff/twins.(*Network).tick(0xc0003d6210)
+        /home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
+github.com/relab/hotstuff/twins.(*Network).run(0xc0003d6210, 0x64)
+        /home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
+github.com/relab/hotstuff/twins.ExecuteScenario({0xc00021c580, 0x4, 0x4}, 0x4, 0x0, 0xc000265098?, {0x9f52d9, 0xf}, {0xc00001dbc0, 0x2, ...})
+        /home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
+github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d6d00, 0xc00017bf80?, {0xc00021c580?, 0xc000186000?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9f52d9, 0xf}, ...)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:140 +0x149
+github.com/relab/hotstuff/twins.fuzzScenario(0x194?, 0xab91e0?, {0x9734e0, 0xc000626300})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:177 +0x4b5
+github.com/relab/hotstuff/twins.useFuzzMessage(0xc000098640?, 0xc00001df10, {0xab91e0?, 0xc00012b3b0?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:206 +0x7a
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:261 +0x1f3
+testing.tRunner(0xc0000d6d00, 0xa30318)
+        /usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+        /usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+twins.NewViewMsg{
+        ID: 4272436683
+        SyncInfo: hotstuffpb.SyncInfo{
+                QC: nil
+                TC: *hotstuffpb.TimeoutCert{
+                        Sig: nil
+                        View: 8296337063694992599
+                }
+                AggQC: nil
+        }
+}
+- FUZZ MESSAGE END
+
+
+ERROR NUMBER 3
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:612
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+        /usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x3b
+panic({0x94f9c0, 0xe27260})
+        /usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff/internal/proto/hotstuffpb.(*QuorumSignature).GetBLS12Sig(...)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/hotstuff.pb.go:612
+github.com/relab/hotstuff/internal/proto/hotstuffpb.QuorumSignatureFromProto(0x9072a0?)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:50 +0xb9
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc00007e668?)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xbd
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc00007e660)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:56 +0x66
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0x194?, {0xab9270?, 0xc00007e660?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:198 +0x6c
+github.com/relab/hotstuff/twins.useFuzzMessage(0xc000098640?, 0xc00018bf10, {0xab9270?, 0xc00007e660?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:204 +0x5b
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:261 +0x1f3
+testing.tRunner(0xc0000d6d00, 0xa30318)
+        /usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+        /usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+twins.VoteMsg{
+        Deferred: 3434087433
+        ID: false
+        PartialCert: hotstuffpb.PartialCert{
+                Sig: *hotstuffpb.QuorumSignature{
+                        Sig: nil
+                }
+                Hash: [165 91 64 23 170 116 150 237 236 64]
+        }
+}
+- FUZZ MESSAGE END
+
+
+ERROR NUMBER 4
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+        /usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.TryExecuteScenario.func1()
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:133 +0x3b
+panic({0x94f9c0, 0xe27260})
+        /usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff/crypto.(*cache).Verify(0xc0006ef1a0, {0x0, 0x0}, {0xc00071c168, 0x8, 0x8})
+        /home/abje/git_clones/hotstuff_assi/crypto/cache.go:92 +0x15a
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).OnRemoteTimeout(0xc000722240, {0xf9d50230, 0xf53b0c2ed701b518, {0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0, 0x0}})
+        /home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:210 +0xe6
+github.com/relab/hotstuff/synchronizer.(*Synchronizer).InitModule.func3({0x9bca20?, 0xc0007d9590?})
+        /home/abje/git_clones/hotstuff_assi/synchronizer/synchronizer.go:73 +0xd2
+github.com/relab/hotstuff/eventloop.(*EventLoop).processEvent(0xc000556fc0, {0x9bca20?, 0xc0007d9590?})
+        /home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:128 +0x19b
+github.com/relab/hotstuff/eventloop.(*EventLoop).Tick(0xc000556fc0)
+        /home/abje/git_clones/hotstuff_assi/eventloop/eventloop.go:106 +0x65
+github.com/relab/hotstuff/twins.(*Network).tick(0xc00052c000)
+        /home/abje/git_clones/hotstuff_assi/twins/network.go:190 +0x168
+github.com/relab/hotstuff/twins.(*Network).run(0xc00052c000, 0x64)
+        /home/abje/git_clones/hotstuff_assi/twins/network.go:176 +0x205
+github.com/relab/hotstuff/twins.ExecuteScenario({0xc0000e8000, 0x4, 0x4}, 0x4, 0x0, 0xc00032bab8?, {0x9f52d9, 0xf}, {0xc000175bc0, 0x2, ...})
+        /home/abje/git_clones/hotstuff_assi/twins/scenario.go:76 +0x55f
+github.com/relab/hotstuff/twins.TryExecuteScenario(0xc0000d6d00, 0xc000312ba0?, {0xc0000e8000?, 0xc00063e200?, 0x1e?}, 0x20?, 0x0?, 0x1e?, {0x9f52d9, 0xf}, ...)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:140 +0x149
+github.com/relab/hotstuff/twins.fuzzScenario(0x194?, 0xab9240?, {0x9bca20, 0xc0007d9590})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:177 +0x4b5
+github.com/relab/hotstuff/twins.useFuzzMessage(0xc000098640?, 0xc000175f10, {0xab9240?, 0xc0007d94a0?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:206 +0x7a
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:261 +0x1f3
+testing.tRunner(0xc0000d6d00, 0xa30318)
+        /usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+        /usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+twins.TimeoutMsg{
+        ID: 4191486512
+        TimeoutMsg: hotstuffpb.TimeoutMsg{
+                View: 17670730958233515288
+                SyncInfo: nil
+                ViewSig: nil
+                MsgSig: nil
+        }
+}
+- FUZZ MESSAGE END
+
+
+ERROR NUMBER 5
+runtime error: invalid memory address or nil pointer dereference
+/home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
+
+- STACK TRACE BEGIN
+goroutine 6 [running]:
+runtime/debug.Stack()
+        /usr/lib/go/src/runtime/debug/stack.go:24 +0x65
+github.com/relab/hotstuff/twins.fuzzMsgToMsg.func1()
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:191 +0x3b
+panic({0x94f9c0, 0xe27260})
+        /usr/lib/go/src/runtime/panic.go:884 +0x213
+github.com/relab/hotstuff.NewPartialCert({0x0, 0x0}, {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...})
+        /home/abje/git_clones/hotstuff_assi/types.go:144 +0x5c
+github.com/relab/hotstuff/internal/proto/hotstuffpb.PartialCertFromProto(0xc0004ce188?)
+        /home/abje/git_clones/hotstuff_assi/internal/proto/hotstuffpb/convert.go:73 +0xd5
+github.com/relab/hotstuff/twins.(*VoteMsg).ToMsg(0xc0004ce180)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_types.go:56 +0x66
+github.com/relab/hotstuff/twins.fuzzMsgToMsg(0x194?, {0xab9270?, 0xc0004ce180?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:198 +0x6c
+github.com/relab/hotstuff/twins.useFuzzMessage(0xc000098640?, 0xc00018bf10, {0xab9270?, 0xc0004ce180?})
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:204 +0x5b
+github.com/relab/hotstuff/twins.TestFuzz(0x0?)
+        /home/abje/git_clones/hotstuff_assi/twins/fuzz_test.go:261 +0x1f3
+testing.tRunner(0xc0000d6d00, 0xa30318)
+        /usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+        /usr/lib/go/src/testing/testing.go:1629 +0x3ea
+- STACK TRACE END
+
+- FUZZ MESSAGE BEGIN
+twins.VoteMsg{
+        Deferred: 3416455920
+        ID: false
+        PartialCert: hotstuffpb.PartialCert{
+                Sig: nil
+                Hash: []
+        }
+}
+- FUZZ MESSAGE END
+
+unique errors found: 5
+5012 runs were errors
+4530 of 15540 scenarios failed
+482 of 1000 messages failed
