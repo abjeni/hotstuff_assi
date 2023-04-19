@@ -13,7 +13,6 @@ message FuzzMsg {
 		VoteMsg    VoteMsg    = 3;
 		NewViewMsg NewViewMsg = 4;
 	}
-	uint32 MessageNum = 5;
 }
 
 message ProposeMsg {

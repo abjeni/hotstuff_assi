@@ -14,13 +14,10 @@ func depthToTabs(depth int) (tabs string) {
 }
 
 func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
-	if proposeFuzzMsg == nil {
-		return "nil"
-	}
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"twins.ProposeMsg{\n"+
+		"fuzz.ProposeMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tProposal: %v\n"+
 			"%s}",
@@ -31,14 +28,10 @@ func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
 
 func (timeoutFuzzMsg *TimeoutMsg) ToString(depth int) string {
 
-	if timeoutFuzzMsg == nil {
-		return "nil"
-	}
-
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"twins.TimeoutMsg{\n"+
+		"fuzz.TimeoutMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tTimeoutMsg: %v\n"+
 			"%s}",
@@ -48,13 +41,10 @@ func (timeoutFuzzMsg *TimeoutMsg) ToString(depth int) string {
 }
 
 func (voteFuzzMsg *VoteMsg) ToString(depth int) string {
-	if voteFuzzMsg == nil {
-		return "nil"
-	}
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"twins.VoteMsg{\n"+
+		"fuzz.VoteMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tDeffered: %v\n"+
 			"%s\tPartialCert: %v\n"+
@@ -74,7 +64,7 @@ func (newViewFuzzMsg *NewViewMsg) ToString(depth int) string {
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"twins.NewViewMsg{\n"+
+		"fuzz.NewViewMsg{\n"+
 			"%s\tID: %v\n"+
 			"%s\tSyncInfo: %v\n"+
 			"%s}",
