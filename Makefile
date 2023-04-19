@@ -1,9 +1,10 @@
 proto_include := $(shell go list -m -f {{.Dir}} github.com/relab/gorums):internal/proto
 proto_src := internal/proto/clientpb/client.proto          \
-		internal/proto/hotstuffpb/hotstuff.proto           \
-		internal/proto/orchestrationpb/orchestration.proto \
-		internal/proto/handelpb/handel.proto               \
-		metrics/types/types.proto
+		internal/proto/hotstuffpb/hotstuff.proto               \
+		internal/proto/orchestrationpb/orchestration.proto     \
+		internal/proto/handelpb/handel.proto                   \
+		metrics/types/types.proto                              \
+		fuzz/fuzz.proto
 proto_go := $(proto_src:%.proto=%.pb.go)
 gorums_go := internal/proto/clientpb/client_gorums.pb.go \
 		internal/proto/hotstuffpb/hotstuff_gorums.pb.go  \

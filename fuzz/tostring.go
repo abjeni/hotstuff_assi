@@ -1,4 +1,4 @@
-package twins
+package fuzz
 
 import (
 	"fmt"
@@ -6,11 +6,18 @@ import (
 	"github.com/relab/hotstuff/internal/proto/hotstuffpb"
 )
 
-func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
-	var tabs string = ""
+func depthToTabs(depth int) (tabs string) {
 	for i := 0; i < depth; i++ {
 		tabs += "\t"
 	}
+	return
+}
+
+func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
+	if proposeFuzzMsg == nil {
+		return "nil"
+	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"twins.ProposeMsg{\n"+
@@ -18,16 +25,17 @@ func (proposeFuzzMsg *ProposeMsg) ToString(depth int) string {
 			"%s\tProposal: %v\n"+
 			"%s}",
 		tabs, proposeFuzzMsg.ID,
-		tabs, ProposalToString(&proposeFuzzMsg.Proposal, depth+1),
+		tabs, ProposalToString(proposeFuzzMsg.Proposal, depth+1),
 		tabs)
 }
 
 func (timeoutFuzzMsg *TimeoutMsg) ToString(depth int) string {
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+	if timeoutFuzzMsg == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"twins.TimeoutMsg{\n"+
@@ -35,34 +43,35 @@ func (timeoutFuzzMsg *TimeoutMsg) ToString(depth int) string {
 			"%s\tTimeoutMsg: %v\n"+
 			"%s}",
 		tabs, timeoutFuzzMsg.ID,
-		tabs, TimeoutMsgToString(&timeoutFuzzMsg.TimeoutMsg, depth+1),
+		tabs, TimeoutMsgToString(timeoutFuzzMsg.TimeoutMsg, depth+1),
 		tabs)
 }
 
-func (VoteFuzzMsg *VoteMsg) ToString(depth int) string {
-
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+func (voteFuzzMsg *VoteMsg) ToString(depth int) string {
+	if voteFuzzMsg == nil {
+		return "nil"
 	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"twins.VoteMsg{\n"+
-			"%s\tDeferred: %v\n"+
 			"%s\tID: %v\n"+
+			"%s\tDeffered: %v\n"+
 			"%s\tPartialCert: %v\n"+
 			"%s}",
-		tabs, VoteFuzzMsg.ID,
-		tabs, VoteFuzzMsg.Deferred,
-		tabs, PartialCertToString(&VoteFuzzMsg.PartialCert, depth+1),
+		tabs, voteFuzzMsg.ID,
+		tabs, voteFuzzMsg.Deferred,
+		tabs, PartialCertToString(voteFuzzMsg.PartialCert, depth+1),
 		tabs)
 }
 
 func (newViewFuzzMsg *NewViewMsg) ToString(depth int) string {
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+
+	if newViewFuzzMsg == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"twins.NewViewMsg{\n"+
@@ -70,16 +79,17 @@ func (newViewFuzzMsg *NewViewMsg) ToString(depth int) string {
 			"%s\tSyncInfo: %v\n"+
 			"%s}",
 		tabs, newViewFuzzMsg.ID,
-		tabs, SyncInfoToString(&newViewFuzzMsg.SyncInfo, depth+1),
+		tabs, SyncInfoToString(newViewFuzzMsg.SyncInfo, depth+1),
 		tabs)
 }
 
 func ProposalToString(proposal *hotstuffpb.Proposal, depth int) string {
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+	if proposal == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"hotstuffpb.Proposal{\n"+
@@ -97,10 +107,7 @@ func BlockToString(block *hotstuffpb.Block, depth int) string {
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.Block{\n"+
@@ -119,10 +126,12 @@ func BlockToString(block *hotstuffpb.Block, depth int) string {
 }
 
 func TimeoutMsgToString(timeoutMsg *hotstuffpb.TimeoutMsg, depth int) string {
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+
+	if timeoutMsg == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"hotstuffpb.TimeoutMsg{\n"+
@@ -148,10 +157,11 @@ func SyncInfoPtrToString(object *hotstuffpb.SyncInfo, depth int) string {
 
 func SyncInfoToString(syncInfo *hotstuffpb.SyncInfo, depth int) string {
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+	if syncInfo == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"hotstuffpb.SyncInfo{\n"+
@@ -171,10 +181,7 @@ func QuorumCertToString(qc *hotstuffpb.QuorumCert, depth int) string {
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.QuorumCert{\n"+
@@ -194,10 +201,7 @@ func TimeoutCertToString(tc *hotstuffpb.TimeoutCert, depth int) string {
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.TimeoutCert{\n"+
@@ -215,10 +219,7 @@ func AggQCToString(aggQC *hotstuffpb.AggQC, depth int) string {
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	QCsString := "map[uint32]*hotstuffpb.QuorumCert{\n"
 
@@ -241,10 +242,12 @@ func AggQCToString(aggQC *hotstuffpb.AggQC, depth int) string {
 }
 
 func PartialCertToString(partialCert *hotstuffpb.PartialCert, depth int) string {
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
+
+	if partialCert == nil {
+		return "nil"
 	}
+
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"hotstuffpb.PartialCert{\n"+
@@ -262,10 +265,7 @@ func QuorumSignatureToString(quorumSignature *hotstuffpb.QuorumSignature, depth 
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	sigString := ""
 	if quorumSignature.Sig == nil {
@@ -293,10 +293,7 @@ func QuorumSignature_ECDSASigsToString(ECDASigs *hotstuffpb.QuorumSignature_ECDS
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.QuorumSignature_ECDSASigs{\n"+
@@ -312,10 +309,7 @@ func ECDSAMultiSignatureToString(ECDASigs *hotstuffpb.ECDSAMultiSignature, depth
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	sigsString := "[]*ECDASignature{\n"
 
@@ -339,10 +333,7 @@ func ECDASigToString(sig *hotstuffpb.ECDSASignature, depth int) string {
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.ECDSASignature{\n"+
@@ -362,10 +353,7 @@ func QuorumSignature_BLS12SigToString(BLS12Sig *hotstuffpb.QuorumSignature_BLS12
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.QuorumSignature_BLS12Sig{\n"+
@@ -381,10 +369,7 @@ func BLS12AggregateSignatureToString(BLS12Sig *hotstuffpb.BLS12AggregateSignatur
 		return "nil"
 	}
 
-	var tabs string = ""
-	for i := 0; i < depth; i++ {
-		tabs += "\t"
-	}
+	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
 		"*hotstuffpb.BLS12AggregateSignature{\n"+
