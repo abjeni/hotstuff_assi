@@ -5,42 +5,33 @@ import (
 	"github.com/relab/hotstuff/internal/proto/hotstuffpb"
 )
 
-type FuzzMsgInt interface {
+type FuzzMsgInterface interface {
 	ToMsg() any
 	ToString(int) string
 	String() string
 }
 
-/*type ProposeMsg struct {
-	hotstuff.ID
-	hotstuffpb.Proposal
-}*/
-
-/*func (fuzzMsg *ProposeMsg) String() string {
-	return fuzzMsg.ToString(0)
-}*/
-
 type AlmostFuzzMsg interface {
-	Msg() FuzzMsgInt
+	Msg() FuzzMsgInterface
 }
 
-func (proposeFuzzMsg *FuzzMsg_ProposeMsg) Msg() FuzzMsgInt {
+func (proposeFuzzMsg *FuzzMsg_ProposeMsg) Msg() FuzzMsgInterface {
 	return proposeFuzzMsg.ProposeMsg
 }
 
-func (timeoutFuzzMsg *FuzzMsg_TimeoutMsg) Msg() FuzzMsgInt {
+func (timeoutFuzzMsg *FuzzMsg_TimeoutMsg) Msg() FuzzMsgInterface {
 	return timeoutFuzzMsg.TimeoutMsg
 }
 
-func (newViewFuzzMsg *FuzzMsg_NewViewMsg) Msg() FuzzMsgInt {
+func (newViewFuzzMsg *FuzzMsg_NewViewMsg) Msg() FuzzMsgInterface {
 	return newViewFuzzMsg.NewViewMsg
 }
 
-func (voteFuzzMsg *FuzzMsg_VoteMsg) Msg() FuzzMsgInt {
+func (voteFuzzMsg *FuzzMsg_VoteMsg) Msg() FuzzMsgInterface {
 	return voteFuzzMsg.VoteMsg
 }
 
-func (fuzzMsg *FuzzMsg) Msg() FuzzMsgInt {
+func (fuzzMsg *FuzzMsg) Msg() FuzzMsgInterface {
 	return fuzzMsg.Message.(AlmostFuzzMsg).Msg()
 }
 
