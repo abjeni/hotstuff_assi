@@ -68,10 +68,10 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 	fmt.Printf("%d of %d messages failed\n", errorInfo.failedMessages, errorInfo.totalMessages)
 }
 
-func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any) {
+func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
 
 	simpleStack := SimplifyStack(fullStack)
-	identifier := simpleStack + "\n" + fmt.Sprint(err)
+	identifier := simpleStack + "\n" + fmt.Sprint(err) + "\n" + info
 
 	errorInfo.errorCount++
 

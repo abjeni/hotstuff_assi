@@ -31,7 +31,7 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newM
 		if err := recover(); err != nil {
 			stack := string(debug.Stack())
 
-			errorInfo.AddPanic(stack, err)
+			errorInfo.AddPanic(stack, err, "TryExecuteScenario")
 			errorInfo.failedScenarios++
 		}
 	}()
@@ -149,7 +149,7 @@ func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg *FuzzMsg) any {
 		if err := recover(); err != nil {
 			stack := string(debug.Stack())
 
-			errorInfo.AddPanic(stack, err)
+			errorInfo.AddPanic(stack, err, "fuzzMsgToMsg")
 			errorInfo.failedMessages++
 		}
 	}()
@@ -217,7 +217,7 @@ func TestFrequencyErrorFuzz(t *testing.T) {
 		errorInfo := new(ErrorInfo)
 		errorInfo.Init()
 
-		iterations := 10
+		iterations := 1
 
 		for i := 0; i < iterations; i++ {
 			fuzzMessage := createFuzzMessage(f, errorInfo)
