@@ -2,11 +2,10 @@ package fuzz
 
 import (
 	"fmt"
+	"math/rand"
 	"runtime/debug"
 	"testing"
 
-	fuzz "github.com/google/gofuzz"
-	"github.com/relab/hotstuff/internal/proto/hotstuffpb"
 	"github.com/relab/hotstuff/twins"
 
 	_ "github.com/relab/hotstuff/consensus/chainedhotstuff"
@@ -51,18 +50,6 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newM
 	}
 }
 
-func Equal(a, b []byte) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 func getMessagesBasicScenario() int {
 	var numNodes uint8 = 4
 
@@ -88,61 +75,6 @@ func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
 	TryExecuteScenario(t, errorInfo, 1, newMessage)
 }
 
-func initFuzz() *fuzz.Fuzzer {
-	nilChance := 0.1
-
-	f := fuzz.New().NilChance(nilChance).Funcs(
-		func(m *FuzzMsg, c fuzz.Continue) {
-			switch c.Intn(4) {
-			case 0:
-				msg := FuzzMsg_ProposeMsg{
-					ProposeMsg: &ProposeMsg{},
-				}
-				c.Fuzz(msg.ProposeMsg)
-				m.Message = &msg
-			case 1:
-				msg := FuzzMsg_VoteMsg{
-					VoteMsg: &VoteMsg{},
-				}
-				c.Fuzz(msg.VoteMsg)
-				m.Message = &msg
-			case 2:
-				msg := FuzzMsg_TimeoutMsg{
-					TimeoutMsg: &TimeoutMsg{},
-				}
-				c.Fuzz(msg.TimeoutMsg)
-				m.Message = &msg
-			case 3:
-				msg := FuzzMsg_NewViewMsg{
-					NewViewMsg: &NewViewMsg{},
-				}
-				c.Fuzz(msg.NewViewMsg)
-				m.Message = &msg
-			}
-		},
-		func(sig **hotstuffpb.QuorumSignature, c fuzz.Continue) {
-			if c.Float64() < nilChance {
-				*sig = nil
-				return
-			}
-
-			*sig = new(hotstuffpb.QuorumSignature)
-			switch c.Intn(2) {
-			case 0:
-				ecdsa := new(hotstuffpb.QuorumSignature_ECDSASigs)
-				c.Fuzz(&ecdsa)
-				(*sig).Sig = ecdsa
-			case 1:
-				bls12 := new(hotstuffpb.QuorumSignature_BLS12Sig)
-				c.Fuzz(&bls12)
-				(*sig).Sig = bls12
-			}
-		},
-	)
-
-	return f
-}
-
 func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg *FuzzMsg) any {
 	errorInfo.totalMessages++
 	defer func() {
@@ -157,8 +89,9 @@ func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg *FuzzMsg) any {
 	return fuzzMsg.Msg().ToMsg()
 }
 
-func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage *FuzzMsg) {
+func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage *FuzzMsg, seed *int64) {
 	errorInfo.currentFuzzMsg = fuzzMessage
+	errorInfo.currentFuzzMsgSeed = seed
 
 	newMessage := fuzzMsgToMsg(errorInfo, fuzzMessage)
 
@@ -167,28 +100,25 @@ func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage *FuzzMsg) {
 	}
 }
 
-func createFuzzMessage(f *fuzz.Fuzzer, errorInfo *ErrorInfo) *FuzzMsg {
-	newMessage := new(FuzzMsg)
-	f.Fuzz(newMessage)
-	return newMessage
-}
-
+// the main test
 func TestFuzz(t *testing.T) {
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
 
 	f := initFuzz()
 
-	iterations := 100
+	iterations := 1000
 
 	for i := 0; i < iterations; i++ {
-		fuzzMessage := createFuzzMessage(f, errorInfo)
-		useFuzzMessage(t, errorInfo, fuzzMessage)
+		seed := rand.Int63()
+		fuzzMessage := createFuzzMessage(f, errorInfo, &seed)
+		useFuzzMessage(t, errorInfo, fuzzMessage, &seed)
 	}
 
 	errorInfo.OutputInfo()
 }
 
+// load previously created fuzz messages from a file
 // it doesn't work quite right, i blame proto.Marshal()
 func TestPreviousFuzz(t *testing.T) {
 
@@ -202,37 +132,31 @@ func TestPreviousFuzz(t *testing.T) {
 	}
 
 	for _, fuzzMessage := range fuzzMsgs {
-		useFuzzMessage(t, errorInfo, fuzzMessage)
+		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
 	}
 
 	errorInfo.OutputInfo()
 }
 
-func TestFrequencyErrorFuzz(t *testing.T) {
+// load previously created fuzz messages from a file
+// it recreates the fuzz messages from a 64-bit source
+func TestSeedPreviousFuzz(t *testing.T) {
 
-	frequency := make(map[string]int, 0)
+	errorInfo := new(ErrorInfo)
+	errorInfo.Init()
+
+	seeds, err := loadSeedsFromFile("previous_messages.seed")
+
+	if err != nil {
+		panic(err)
+	}
 
 	f := initFuzz()
-	for j := 0; j < 1000; j++ {
-		errorInfo := new(ErrorInfo)
-		errorInfo.Init()
 
-		iterations := 1
-
-		for i := 0; i < iterations; i++ {
-			fuzzMessage := createFuzzMessage(f, errorInfo)
-			useFuzzMessage(t, errorInfo, fuzzMessage)
-		}
-
-		for key := range errorInfo.panics {
-			frequency[key]++
-		}
+	for _, seed := range seeds {
+		fuzzMessage := createFuzzMessage(f, errorInfo, &seed)
+		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
 	}
 
-	for key, val := range frequency {
-		fmt.Println(key)
-		fmt.Println(val)
-		fmt.Println()
-	}
-
+	errorInfo.OutputInfo()
 }

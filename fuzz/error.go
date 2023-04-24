@@ -2,6 +2,8 @@ package fuzz
 
 import (
 	"fmt"
+	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -10,19 +12,21 @@ type PanicInfo struct {
 	StackTrace string
 	FuzzMsg    string
 	FuzzMsgB64 string
+	Seed       *int64
 	LineNum    int
 }
 
 type ErrorInfo struct {
-	messageFile       string
-	currentFuzzMsg    *FuzzMsg
-	currentFuzzMsgB64 string
-	errorCount        int
-	panics            map[string]PanicInfo
-	totalScenarios    int
-	failedScenarios   int
-	totalMessages     int
-	failedMessages    int
+	messageFile        string
+	currentFuzzMsg     *FuzzMsg
+	currentFuzzMsgB64  string
+	currentFuzzMsgSeed *int64
+	errorCount         int
+	panics             map[string]PanicInfo
+	totalScenarios     int
+	failedScenarios    int
+	totalMessages      int
+	failedMessages     int
 }
 
 func (errorInfo *ErrorInfo) Init() {
@@ -32,6 +36,7 @@ func (errorInfo *ErrorInfo) Init() {
 func (errorInfo *ErrorInfo) OutputInfo() {
 
 	b64s := ""
+	seeds := ""
 
 	fmt.Println()
 	fmt.Println()
@@ -39,15 +44,25 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 
 	fmt.Println("ERROR INFO")
 
-	var i int = 0
-	for key, panicInfo := range errorInfo.panics {
+	keys := make([]string, 0)
+	for key := range errorInfo.panics {
+		keys = append(keys, key)
+	}
+
+	//sorting the keys of the
+	sort.Strings(keys)
+
+	for i, key := range keys {
+		panicInfo := errorInfo.panics[key]
 		b64s += panicInfo.FuzzMsgB64 + "\n"
 
-		i++
+		if panicInfo.Seed != nil {
+			seeds += strconv.FormatInt(*panicInfo.Seed, 10) + "\n"
+		}
 
 		fmt.Println()
-		fmt.Printf("ERROR NUMBER %d\n", i)
-		fmt.Println("error location")
+		fmt.Printf("ERROR NUMBER %d\n", i+1)
+		//contains error location, err text and recover point
 		fmt.Println(key)
 		fmt.Println()
 		fmt.Println("- STACK TRACE BEGIN")
@@ -60,7 +75,11 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 		fmt.Println()
 	}
 
-	saveFuzzMessagesToFile("previous_messages.b64", b64s)
+	saveStringToFile("previous_messages.b64", b64s)
+
+	if seeds != "" {
+		saveStringToFile("previous_messages.seed", seeds)
+	}
 
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
@@ -71,7 +90,7 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
 
 	simpleStack := SimplifyStack(fullStack)
-	identifier := simpleStack + "\n" + fmt.Sprint(err) + "\n" + info
+	identifier := "error location:\t" + simpleStack + "\nerror info:\t" + fmt.Sprint(err) + "\nrecovered from:\t" + info
 
 	errorInfo.errorCount++
 
@@ -90,6 +109,7 @@ func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
 		StackTrace: fullStack,
 		FuzzMsg:    FuzzMsgString,
 		FuzzMsgB64: b64,
+		Seed:       errorInfo.currentFuzzMsgSeed,
 		LineNum:    newLines,
 	}
 
@@ -103,5 +123,5 @@ func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
 func SimplifyStack(stack string) string {
 	stackLines := strings.Split(strings.ReplaceAll(stack, "\r\n", "\n"), "\n")
 	// line 9 tells us where the panic happened, found through testing
-	return stackLines[8]
+	return stackLines[8][1:]
 }

@@ -3,8 +3,8 @@ package fuzz
 import (
 	"bufio"
 	"encoding/base64"
-	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"google.golang.org/protobuf/proto"
@@ -39,7 +39,7 @@ func b64ToFuzzMsg(str string) (*FuzzMsg, error) {
 	return full_str, nil
 }*/
 
-func saveFuzzMessagesToFile(filename string, b64s string) error {
+func saveStringToFile(filename string, str string) error {
 
 	f, err := os.Create(filename)
 	if err != nil {
@@ -47,22 +47,21 @@ func saveFuzzMessagesToFile(filename string, b64s string) error {
 	}
 	defer f.Close()
 	w := bufio.NewWriter(f)
-	_, err = w.WriteString(b64s)
+	_, err = w.WriteString(str)
 	w.Flush()
 
 	return nil
 }
 
-func loadFuzzMessagesFromFile(filename string) ([]*FuzzMsg, error) {
-
+func loadStringFromFile(filename string) (string, error) {
 	f, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	fi, err := f.Stat()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	bytes := make([]byte, fi.Size())
@@ -71,7 +70,18 @@ func loadFuzzMessagesFromFile(filename string) ([]*FuzzMsg, error) {
 
 	b64string := string(bytes)
 
-	b64s := strings.Split(b64string, "\n")
+	return b64string, nil
+}
+
+func loadFuzzMessagesFromFile(filename string) ([]*FuzzMsg, error) {
+
+	str, err := loadStringFromFile(filename)
+
+	if err != nil {
+		return nil, err
+	}
+
+	b64s := strings.Split(str, "\n")
 
 	fuzzMsgs := make([]*FuzzMsg, 0)
 
@@ -81,8 +91,6 @@ func loadFuzzMessagesFromFile(filename string) ([]*FuzzMsg, error) {
 			continue
 		}
 
-		fmt.Println(b64)
-
 		fuzzMsg, err := b64ToFuzzMsg(b64)
 		if err != nil {
 			return nil, err
@@ -91,4 +99,30 @@ func loadFuzzMessagesFromFile(filename string) ([]*FuzzMsg, error) {
 	}
 
 	return fuzzMsgs, nil
+}
+
+func loadSeedsFromFile(filename string) ([]int64, error) {
+
+	str, err := loadStringFromFile(filename)
+
+	if err != nil {
+		return nil, err
+	}
+
+	seedstrs := strings.Split(str, "\n")
+	seeds := make([]int64, 0)
+
+	for _, seedstr := range seedstrs {
+		if seedstr == "" {
+			continue
+		}
+
+		seed, err := strconv.ParseInt(seedstr, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		seeds = append(seeds, seed)
+	}
+
+	return seeds, nil
 }
