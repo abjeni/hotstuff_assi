@@ -1,4 +1,4 @@
-package twins
+package fuzz
 
 import (
 	"context"
@@ -71,6 +71,13 @@ type Network struct {
 	replicas map[hotstuff.ID][]*node
 	// For each view (starting at 1), contains the list of partitions for that view.
 	views []View
+
+	OldMessage int
+	NewMessage any
+
+	Messages []any
+
+	MessageCounter int
 
 	// the message types to drop
 	dropTypes map[reflect.Type]struct{}
@@ -188,6 +195,7 @@ func (n *Network) tick() {
 // shouldDrop decides if the sender should drop the message, based on the current view of the sender and the
 // partitions configured for that view.
 func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
+
 	node, ok := n.nodes[sender]
 	if !ok {
 		panic(fmt.Errorf("node matching sender id %d was not found", sender))
@@ -222,6 +230,11 @@ func (n *Network) shouldDrop(sender, receiver uint32, message any) bool {
 	return ok
 }
 
+func (n *Network) shouldSwap(message any) bool {
+	n.logger.Infof("is %d equal to %d?", n.OldMessage, n.MessageCounter)
+	return n.OldMessage == n.MessageCounter
+}
+
 // NewConfiguration returns a new Configuration module for this network.
 func (n *Network) NewConfiguration() modules.Configuration {
 	return &configuration{network: n}
@@ -241,6 +254,7 @@ func (c *configuration) InitModule(mods *modules.Core) {
 }
 
 func (c *configuration) broadcastMessage(message any) {
+	c.network.logger.Infof("broadcasting message")
 	for id := range c.network.replicas {
 		if id == c.node.id.ReplicaID {
 			// do not send message to self or twin
@@ -252,15 +266,31 @@ func (c *configuration) broadcastMessage(message any) {
 }
 
 func (c *configuration) sendMessage(id hotstuff.ID, message any) {
+
 	nodes, ok := c.network.replicas[id]
 	if !ok {
 		panic(fmt.Errorf("attempt to send message to replica %d, but this replica does not exist", id))
 	}
+
 	for _, node := range nodes {
+
 		if c.shouldDrop(node.id, message) {
 			c.network.logger.Infof("node %v -> node %v: DROP %T(%v)", c.node.id, node.id, message, message)
 			continue
 		}
+
+		c.network.Messages = append(c.network.Messages, message)
+		c.network.MessageCounter += 1
+
+		if c.network.shouldSwap(message) {
+
+			/*if (c.network.NewMessage.(hotstuff.ProposeMsg).Block.Parent() == hotstuff.Hash{}) {
+				c.network.NewMessage.(hotstuff.ProposeMsg).Block.SetParent(message.(hotstuff.ProposeMsg).Block.Parent())
+			}*/
+			c.network.logger.Infof("swapping message with fuzz message")
+			message = c.network.NewMessage
+		}
+
 		c.network.logger.Infof("node %v -> node %v: SEND %T(%v)", c.node.id, node.id, message, message)
 		c.network.pendingMessages = append(
 			c.network.pendingMessages,

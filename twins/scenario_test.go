@@ -7,23 +7,17 @@ import (
 )
 
 func TestBasicScenario(t *testing.T) {
-	var numNodes uint8 = 4
-
+	s := Scenario{}
 	allNodesSet := make(NodeSet)
-	for i := 1; i <= int(numNodes); i++ {
+	for i := 1; i <= 4; i++ {
 		allNodesSet.Add(uint32(i))
 	}
-
-	s := Scenario{}
 	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
 	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
 	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
 	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
 
-	result, err := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff")
-
-	//fmt.Println(result.NetworkLog)
-
+	result, err := ExecuteScenario(s, 4, 0, 100, "chainedhotstuff")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,6 +27,6 @@ func TestBasicScenario(t *testing.T) {
 	}
 
 	if result.Commits != 1 {
-		t.Errorf("Expected one commit (got %d)", result.Commits)
+		t.Error("Expected one commit")
 	}
 }

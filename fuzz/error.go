@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"testing"
 )
 
 type PanicInfo struct {
@@ -33,7 +34,7 @@ func (errorInfo *ErrorInfo) Init() {
 	errorInfo.panics = make(map[string]PanicInfo)
 }
 
-func (errorInfo *ErrorInfo) OutputInfo() {
+func (errorInfo *ErrorInfo) OutputInfo(t *testing.T) {
 
 	b64s := ""
 	seeds := ""
@@ -72,7 +73,7 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 		fmt.Println("- FUZZ MESSAGE BEGIN")
 		fmt.Println(panicInfo.FuzzMsg)
 		fmt.Println("- FUZZ MESSAGE END")
-		fmt.Println()
+		t.Error(panicInfo.Err)
 	}
 
 	saveStringToFile("previous_messages.b64", b64s)
@@ -87,10 +88,10 @@ func (errorInfo *ErrorInfo) OutputInfo() {
 	fmt.Printf("%d of %d messages failed\n", errorInfo.failedMessages, errorInfo.totalMessages)
 }
 
-func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
+func (errorInfo *ErrorInfo) AddPanic(fullStack string, err2 any, info string) {
 
 	simpleStack := SimplifyStack(fullStack)
-	identifier := "error location:\t" + simpleStack + "\nerror info:\t" + fmt.Sprint(err) + "\nrecovered from:\t" + info
+	identifier := "error location:\t" + simpleStack + "\nerror info:\t" + fmt.Sprint(err2) + "\nrecovered from:\t" + info
 
 	errorInfo.errorCount++
 
@@ -105,7 +106,7 @@ func (errorInfo *ErrorInfo) AddPanic(fullStack string, err any, info string) {
 	newLines := strings.Count(FuzzMsgString, "\n")
 
 	newPanic := PanicInfo{
-		Err:        err,
+		Err:        err2,
 		StackTrace: fullStack,
 		FuzzMsg:    FuzzMsgString,
 		FuzzMsgB64: b64,

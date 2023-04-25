@@ -6,24 +6,10 @@ import (
 	"runtime/debug"
 	"testing"
 
-	"github.com/relab/hotstuff/twins"
-
 	_ "github.com/relab/hotstuff/consensus/chainedhotstuff"
 )
 
 func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newMessage any) {
-	var numNodes uint8 = 4
-
-	allNodesSet := make(twins.NodeSet)
-	for i := 1; i <= int(numNodes); i++ {
-		allNodesSet.Add(uint32(i))
-	}
-
-	s := twins.Scenario{}
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
 
 	errorInfo.totalScenarios++
 	defer func() {
@@ -35,7 +21,20 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newM
 		}
 	}()
 
-	result, err := twins.ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
+	var numNodes uint8 = 4
+
+	allNodesSet := make(NodeSet)
+	for i := 1; i <= int(numNodes); i++ {
+		allNodesSet.Add(uint32(i))
+	}
+
+	s := Scenario{}
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+
+	result, err := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff", oldMessage, newMessage)
 
 	if err != nil {
 		panic(err)
@@ -53,18 +52,18 @@ func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newM
 func getMessagesBasicScenario() int {
 	var numNodes uint8 = 4
 
-	allNodesSet := make(twins.NodeSet)
+	allNodesSet := make(NodeSet)
 	for i := 1; i <= int(numNodes); i++ {
 		allNodesSet.Add(uint32(i))
 	}
 
-	s := twins.Scenario{}
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
-	s = append(s, twins.View{Leader: 1, Partitions: []twins.NodeSet{allNodesSet}})
+	s := Scenario{}
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
+	s = append(s, View{Leader: 1, Partitions: []NodeSet{allNodesSet}})
 
-	result, _ := twins.ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff")
+	result, _ := ExecuteScenario(s, numNodes, 0, 100, "chainedhotstuff")
 
 	messageCount := result.MessageCount
 
@@ -115,7 +114,7 @@ func TestFuzz(t *testing.T) {
 		useFuzzMessage(t, errorInfo, fuzzMessage, &seed)
 	}
 
-	errorInfo.OutputInfo()
+	errorInfo.OutputInfo(t)
 }
 
 // load previously created fuzz messages from a file
@@ -135,7 +134,7 @@ func TestPreviousFuzz(t *testing.T) {
 		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
 	}
 
-	errorInfo.OutputInfo()
+	errorInfo.OutputInfo(t)
 }
 
 // load previously created fuzz messages from a file
@@ -154,9 +153,10 @@ func TestSeedPreviousFuzz(t *testing.T) {
 	f := initFuzz()
 
 	for _, seed := range seeds {
+		fmt.Println("seperator")
 		fuzzMessage := createFuzzMessage(f, errorInfo, &seed)
 		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
 	}
 
-	errorInfo.OutputInfo()
+	errorInfo.OutputInfo(t)
 }

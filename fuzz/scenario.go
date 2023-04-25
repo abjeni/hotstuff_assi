@@ -1,4 +1,4 @@
-package twins
+package fuzz
 
 import (
 	"context"
@@ -38,17 +38,51 @@ func (s Scenario) String() string {
 
 // ScenarioResult contains the result and logs from executing a scenario.
 type ScenarioResult struct {
-	Safe        bool
-	Commits     int
-	NetworkLog  string
-	NodeLogs    map[NodeID]string
-	NodeCommits map[NodeID][]*hotstuff.Block
+	Safe         bool
+	Commits      int
+	NetworkLog   string
+	NodeLogs     map[NodeID]string
+	NodeCommits  map[NodeID][]*hotstuff.Block
+	Messages     []any
+	MessageCount int
+}
+
+func assignNodeIDs(numNodes, numTwins uint8) (nodes, twins []NodeID) {
+	replicaID := hotstuff.ID(1)
+	networkID := uint32(1)
+	remainingTwins := numTwins
+
+	// assign IDs to nodes
+	for i := uint8(0); i < numNodes; i++ {
+		if remainingTwins > 0 {
+			twins = append(twins, NodeID{
+				ReplicaID: replicaID,
+				NetworkID: networkID,
+			})
+			networkID++
+			twins = append(twins, NodeID{
+				ReplicaID: replicaID,
+				NetworkID: networkID,
+			})
+			remainingTwins--
+		} else {
+			nodes = append(nodes, NodeID{
+				ReplicaID: replicaID,
+				NetworkID: networkID,
+			})
+		}
+		networkID++
+		replicaID++
+	}
+
+	return
 }
 
 // ExecuteScenario executes a twins scenario.
-func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string) (result ScenarioResult, err error) {
+func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, consensusName string, replaceMessage ...any) (result ScenarioResult, err error) {
 	// Network simulator that blocks proposals, votes, and fetch requests between nodes that are in different partitions.
 	// Timeout and NewView messages are permitted.
+
 	network := NewPartitionedNetwork(scenario,
 		hotstuff.ProposeMsg{},
 		hotstuff.VoteMsg{},
@@ -56,6 +90,11 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 		hotstuff.NewViewMsg{},
 		hotstuff.TimeoutMsg{},
 	)
+
+	if len(replaceMessage) == 2 {
+		network.OldMessage = replaceMessage[0].(int)
+		network.NewMessage = replaceMessage[1]
+	}
 
 	nodes, twins := assignNodeIDs(numNodes, numTwins)
 	nodes = append(nodes, twins...)
@@ -76,11 +115,13 @@ func ExecuteScenario(scenario Scenario, numNodes, numTwins uint8, numTicks int, 
 	safe, commits := checkCommits(network)
 
 	return ScenarioResult{
-		Safe:        safe,
-		Commits:     commits,
-		NetworkLog:  network.log.String(),
-		NodeLogs:    nodeLogs,
-		NodeCommits: getBlocks(network),
+		Safe:         safe,
+		Commits:      commits,
+		NetworkLog:   network.log.String(),
+		NodeLogs:     nodeLogs,
+		NodeCommits:  getBlocks(network),
+		Messages:     network.Messages,
+		MessageCount: network.MessageCounter,
 	}, nil
 }
 
