@@ -9,8 +9,7 @@ import (
 	_ "github.com/relab/hotstuff/consensus/chainedhotstuff"
 )
 
-func TryExecuteScenario(t *testing.T, errorInfo *ErrorInfo, oldMessage any, newMessage any) {
-
+func TryExecuteScenario(errorInfo *ErrorInfo, oldMessage any, newMessage any) {
 	errorInfo.totalScenarios++
 	defer func() {
 		if err := recover(); err != nil {
@@ -70,8 +69,8 @@ func getMessagesBasicScenario() int {
 	return messageCount
 }
 
-func fuzzScenario(t *testing.T, errorInfo *ErrorInfo, newMessage any) {
-	TryExecuteScenario(t, errorInfo, 1, newMessage)
+func fuzzScenario(errorInfo *ErrorInfo, newMessage any) {
+	TryExecuteScenario(errorInfo, 1, newMessage)
 }
 
 func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg *FuzzMsg) any {
@@ -88,14 +87,13 @@ func fuzzMsgToMsg(errorInfo *ErrorInfo, fuzzMsg *FuzzMsg) any {
 	return fuzzMsg.Msg().ToMsg()
 }
 
-func useFuzzMessage(t *testing.T, errorInfo *ErrorInfo, fuzzMessage *FuzzMsg, seed *int64) {
-	errorInfo.currentFuzzMsg = fuzzMessage
-	errorInfo.currentFuzzMsgSeed = seed
+func useFuzzMessage(errorInfo *ErrorInfo, fuzzMessage *FuzzMsg, seed *int64) {
+	errorInfo.AddTotal(fuzzMessage, seed)
 
 	newMessage := fuzzMsgToMsg(errorInfo, fuzzMessage)
 
 	if newMessage != nil {
-		fuzzScenario(t, errorInfo, newMessage)
+		fuzzScenario(errorInfo, newMessage)
 	}
 }
 
@@ -109,9 +107,13 @@ func TestFuzz(t *testing.T) {
 	iterations := 1000
 
 	for i := 0; i < iterations; i++ {
+		// \r is carriage return, writing the
+		// next line will overwrite the previous ;)
+		fmt.Printf("running test %4d/%4d %4d errors \r", i+1, iterations, errorInfo.errorCount)
+
 		seed := rand.Int63()
-		fuzzMessage := createFuzzMessage(f, errorInfo, &seed)
-		useFuzzMessage(t, errorInfo, fuzzMessage, &seed)
+		fuzzMessage := createFuzzMessage(f, &seed)
+		useFuzzMessage(errorInfo, fuzzMessage, &seed)
 	}
 
 	errorInfo.OutputInfo(t)
@@ -131,7 +133,7 @@ func TestPreviousFuzz(t *testing.T) {
 	}
 
 	for _, fuzzMessage := range fuzzMsgs {
-		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
+		useFuzzMessage(errorInfo, fuzzMessage, nil)
 	}
 
 	errorInfo.OutputInfo(t)
@@ -140,7 +142,6 @@ func TestPreviousFuzz(t *testing.T) {
 // load previously created fuzz messages from a file
 // it recreates the fuzz messages from a 64-bit source
 func TestSeedPreviousFuzz(t *testing.T) {
-
 	errorInfo := new(ErrorInfo)
 	errorInfo.Init()
 
@@ -153,9 +154,8 @@ func TestSeedPreviousFuzz(t *testing.T) {
 	f := initFuzz()
 
 	for _, seed := range seeds {
-		fmt.Println("seperator")
-		fuzzMessage := createFuzzMessage(f, errorInfo, &seed)
-		useFuzzMessage(t, errorInfo, fuzzMessage, nil)
+		fuzzMessage := createFuzzMessage(f, &seed)
+		useFuzzMessage(errorInfo, fuzzMessage, nil)
 	}
 
 	errorInfo.OutputInfo(t)

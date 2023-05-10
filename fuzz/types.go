@@ -41,30 +41,11 @@ func (proposeFuzzMsg *ProposeMsg) ToMsg() any {
 	return proposeMsg
 }
 
-/*type TimeoutMsg struct {
-	hotstuff.ID
-	hotstuffpb.TimeoutMsg
-}*/
-
-/*func (fuzzMsg *TimeoutMsg) String() string {
-	return fuzzMsg.ToString(0)
-}*/
-
 func (timeoutFuzzMsg *TimeoutMsg) ToMsg() any {
 	timeoutMsg := hotstuffpb.TimeoutMsgFromProto(timeoutFuzzMsg.TimeoutMsg)
 	timeoutMsg.ID = hotstuff.ID(timeoutFuzzMsg.ID)
 	return timeoutMsg
 }
-
-/*type VoteMsg struct {
-	hotstuff.ID
-	hotstuffpb.PartialCert
-	Deferred bool
-}*/
-
-/*func (fuzzMsg *VoteMsg) String() string {
-	return fuzzMsg.ToString(0)
-}*/
 
 func (voteFuzzMsg *VoteMsg) ToMsg() any {
 	voteMsg := hotstuff.VoteMsg{}
@@ -73,15 +54,6 @@ func (voteFuzzMsg *VoteMsg) ToMsg() any {
 	voteMsg.Deferred = voteFuzzMsg.Deferred
 	return voteMsg
 }
-
-/*type NewViewMsg struct {
-	hotstuff.ID
-	hotstuffpb.SyncInfo
-}*/
-
-/*func (fuzzMsg *NewViewMsg) String() string {
-	return fuzzMsg.ToString(0)
-}*/
 
 func (newViewFuzzMsg *NewViewMsg) ToMsg() any {
 	newViewMsg := hotstuff.NewViewMsg{}

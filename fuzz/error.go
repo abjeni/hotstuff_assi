@@ -2,11 +2,33 @@ package fuzz
 
 import (
 	"fmt"
+	reflect "reflect"
 	"sort"
 	"strconv"
 	"strings"
 	"testing"
 )
+
+type TypeCount map[reflect.Type]int
+
+func (typeCount TypeCount) Add(typ reflect.Type) {
+	typeCount[typ]++
+}
+
+func (typeCount TypeCount) String(typeTotalCount TypeCount) string {
+	keys := make([]reflect.Type, 0)
+	for key := range typeCount {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool { return keys[i].String() < keys[j].String() })
+
+	str := ""
+	for _, key := range keys {
+		str += key.String() + ": " + strconv.Itoa(typeCount[key]) + " / " + strconv.Itoa(typeTotalCount[key]) + "\n"
+	}
+	return str
+}
 
 type PanicInfo struct {
 	Err        any
@@ -15,6 +37,7 @@ type PanicInfo struct {
 	FuzzMsgB64 string
 	Seed       *int64
 	LineNum    int
+	TypeCount  TypeCount
 }
 
 type ErrorInfo struct {
@@ -28,10 +51,14 @@ type ErrorInfo struct {
 	failedScenarios    int
 	totalMessages      int
 	failedMessages     int
+	TypePanicCount     TypeCount
+	TypeTotalCount     TypeCount
 }
 
 func (errorInfo *ErrorInfo) Init() {
 	errorInfo.panics = make(map[string]PanicInfo)
+	errorInfo.TypeTotalCount = make(TypeCount)
+	errorInfo.TypePanicCount = make(TypeCount)
 }
 
 func (errorInfo *ErrorInfo) OutputInfo(t *testing.T) {
@@ -66,6 +93,8 @@ func (errorInfo *ErrorInfo) OutputInfo(t *testing.T) {
 		//contains error location, err text and recover point
 		fmt.Println(key)
 		fmt.Println()
+		fmt.Println("crash amounts grouped by type:")
+		fmt.Println(panicInfo.TypeCount.String(errorInfo.TypeTotalCount))
 		fmt.Println("- STACK TRACE BEGIN")
 		fmt.Print(panicInfo.StackTrace)
 		fmt.Println("- STACK TRACE END")
@@ -73,7 +102,11 @@ func (errorInfo *ErrorInfo) OutputInfo(t *testing.T) {
 		fmt.Println("- FUZZ MESSAGE BEGIN")
 		fmt.Println(panicInfo.FuzzMsg)
 		fmt.Println("- FUZZ MESSAGE END")
-		t.Error(panicInfo.Err)
+		fmt.Println()
+
+		if t != nil {
+			t.Error(panicInfo.Err)
+		}
 	}
 
 	saveStringToFile("previous_messages.b64", b64s)
@@ -82,10 +115,23 @@ func (errorInfo *ErrorInfo) OutputInfo(t *testing.T) {
 		saveStringToFile("previous_messages.seed", seeds)
 	}
 
+	fmt.Println()
+	fmt.Println("SUMMARY")
 	fmt.Printf("unique errors found: %d\n", len(errorInfo.panics))
 	fmt.Printf("%d runs were errors\n", errorInfo.errorCount)
 	fmt.Printf("%d of %d scenarios failed\n", errorInfo.failedScenarios, errorInfo.totalScenarios)
 	fmt.Printf("%d of %d messages failed\n", errorInfo.failedMessages, errorInfo.totalMessages)
+	fmt.Println()
+	fmt.Println("crash amounts grouped by type:")
+	fmt.Println(errorInfo.TypePanicCount.String(errorInfo.TypeTotalCount))
+}
+
+func (errorInfo *ErrorInfo) AddTotal(fuzzMessage *FuzzMsg, seed *int64) {
+	errorInfo.totalMessages++
+	errorInfo.currentFuzzMsg = fuzzMessage
+	errorInfo.currentFuzzMsgSeed = seed
+	typ := reflect.TypeOf(fuzzMessage.Msg())
+	errorInfo.TypeTotalCount.Add(typ)
 }
 
 func (errorInfo *ErrorInfo) AddPanic(fullStack string, err2 any, info string) {
@@ -95,7 +141,7 @@ func (errorInfo *ErrorInfo) AddPanic(fullStack string, err2 any, info string) {
 
 	errorInfo.errorCount++
 
-	oldPanic, ok := errorInfo.panics[identifier]
+	oldPanic, okPanic := errorInfo.panics[identifier]
 
 	b64, err := fuzzMsgToB64(errorInfo.currentFuzzMsg)
 	if err != nil {
@@ -114,11 +160,19 @@ func (errorInfo *ErrorInfo) AddPanic(fullStack string, err2 any, info string) {
 		LineNum:    newLines,
 	}
 
-	oldLines := oldPanic.LineNum
+	if okPanic {
+		newPanic.TypeCount = oldPanic.TypeCount
+	} else {
+		newPanic.TypeCount = make(TypeCount)
+	}
 
-	if !ok || newLines < oldLines {
+	oldLines := oldPanic.LineNum
+	if !okPanic || newLines < oldLines {
 		errorInfo.panics[identifier] = newPanic
 	}
+	typ := reflect.TypeOf(errorInfo.currentFuzzMsg.Msg())
+	errorInfo.panics[identifier].TypeCount.Add(typ)
+	errorInfo.TypePanicCount.Add(typ)
 }
 
 func SimplifyStack(stack string) string {

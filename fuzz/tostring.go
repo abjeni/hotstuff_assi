@@ -100,7 +100,7 @@ func BlockToString(block *hotstuffpb.Block, depth int) string {
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.Block{\n"+
+		"&hotstuffpb.Block{\n"+
 			"%s\tParent: %v\n"+
 			"%s\tQC: %v\n"+
 			"%s\tView: %v\n"+
@@ -142,7 +142,7 @@ func SyncInfoPtrToString(object *hotstuffpb.SyncInfo, depth int) string {
 		return "nil"
 	}
 
-	return "*" + SyncInfoToString(object, depth)
+	return "&" + SyncInfoToString(object, depth)
 }
 
 func SyncInfoToString(syncInfo *hotstuffpb.SyncInfo, depth int) string {
@@ -174,7 +174,7 @@ func QuorumCertToString(qc *hotstuffpb.QuorumCert, depth int) string {
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.QuorumCert{\n"+
+		"&hotstuffpb.QuorumCert{\n"+
 			"%s\tSig: %v\n"+
 			"%s\tView: %v\n"+
 			"%s\tHash: %v\n"+
@@ -194,7 +194,7 @@ func TimeoutCertToString(tc *hotstuffpb.TimeoutCert, depth int) string {
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.TimeoutCert{\n"+
+		"&hotstuffpb.TimeoutCert{\n"+
 			"%s\tSig: %v\n"+
 			"%s\tView: %v\n"+
 			"%s}",
@@ -220,7 +220,7 @@ func AggQCToString(aggQC *hotstuffpb.AggQC, depth int) string {
 	QCsString += tabs + "\t"
 
 	return fmt.Sprintf(
-		"*hotstuffpb.AggQC{\n"+
+		"&hotstuffpb.AggQC{\n"+
 			"%s\tQCs: %v\n"+
 			"%s\tSig: %v\n"+
 			"%s\tView: %v\n"+
@@ -270,7 +270,7 @@ func QuorumSignatureToString(quorumSignature *hotstuffpb.QuorumSignature, depth 
 	}
 
 	return fmt.Sprintf(
-		"*hotstuffpb.QuorumSignature{\n"+
+		"&hotstuffpb.QuorumSignature{\n"+
 			"%s\tSig: %s\n"+
 			"%s}",
 		tabs, sigString,
@@ -286,7 +286,7 @@ func QuorumSignature_ECDSASigsToString(ECDASigs *hotstuffpb.QuorumSignature_ECDS
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.QuorumSignature_ECDSASigs{\n"+
+		"&hotstuffpb.QuorumSignature_ECDSASigs{\n"+
 			"%s\tECDASigs: %s\n"+
 			"%s},",
 		tabs, ECDSAMultiSignatureToString(ECDASigs.ECDSASigs, depth+1),
@@ -310,7 +310,7 @@ func ECDSAMultiSignatureToString(ECDASigs *hotstuffpb.ECDSAMultiSignature, depth
 	sigsString += tabs + "\t}"
 
 	return fmt.Sprintf(
-		"*hotstuffpb.ECDSAMultiSignature{\n"+
+		"&hotstuffpb.ECDSAMultiSignature{\n"+
 			"%s\tECDASigs: %s\n"+
 			"%s}",
 		tabs, sigsString,
@@ -326,7 +326,7 @@ func ECDASigToString(sig *hotstuffpb.ECDSASignature, depth int) string {
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.ECDSASignature{\n"+
+		"&hotstuffpb.ECDSASignature{\n"+
 			"%s\tSigner: %v\n"+
 			"%s\tR: %v\n"+
 			"%s\tS: %v\n"+
@@ -346,7 +346,7 @@ func QuorumSignature_BLS12SigToString(BLS12Sig *hotstuffpb.QuorumSignature_BLS12
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.QuorumSignature_BLS12Sig{\n"+
+		"&hotstuffpb.QuorumSignature_BLS12Sig{\n"+
 			"%s\tBLS12Sig: %s\n"+
 			"%s},",
 		tabs, BLS12AggregateSignatureToString(BLS12Sig.BLS12Sig, depth+1),
@@ -362,7 +362,7 @@ func BLS12AggregateSignatureToString(BLS12Sig *hotstuffpb.BLS12AggregateSignatur
 	tabs := depthToTabs(depth)
 
 	return fmt.Sprintf(
-		"*hotstuffpb.BLS12AggregateSignature{\n"+
+		"&hotstuffpb.BLS12AggregateSignature{\n"+
 			"%s\tSig: %v\n"+
 			"%s\tParticipants: %v\n"+
 			"%s},",
